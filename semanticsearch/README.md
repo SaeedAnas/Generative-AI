@@ -1,4 +1,4 @@
-# Semantic Search Engine with Text Chunking
+# Semantic Search Engine
 
 ## Introduction
 In this project, we have constructed a hybrid semantic search engine utilizing both traditional keyword-based indexing (via Elasticsearch) and semantic vector-based searching (through Faiss). The core idea behind semantic search is that it uses embeddings to represent the meanings of words or chunks of text. When querying, it compares the semantic similarity (or distance) between the query's embedding and the embeddings of stored documents, allowing for more intuitive and contextually relevant search results.
