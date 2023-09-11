@@ -4,7 +4,7 @@
 export TIKA_SERVER_JAR="file:///Users/praveen/dev/project-SV/Assignment1/tika-jar/tika-server-standard-2.9.0.jar"
 
 # location of input document file
-echo "Input document files:  /Users/praveen/dev/project-SV/Assignment1/data_files"
+echo "Input document files:  /path/to/data_files"
 
 # Database configuration, 
 export DB_HOST="localhost"
@@ -26,7 +26,7 @@ export ELASTIC_CERT_PATH="~/dev/database/kibana-8.9.2/data/ca_1694198172681.crt"
 
 echo "Tables 'chunks' and 'metadata' and 'documents' dropped successfully!"
 
-#python setup_db.py
-#python SSearch11_store.py
-python SSearch22_index.py
+python setup_db.py
+python SSearch1_store.py
+#python SSearch2_index.py
 #python SSearch3_query.py
