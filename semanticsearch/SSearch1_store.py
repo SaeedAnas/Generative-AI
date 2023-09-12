@@ -4,6 +4,7 @@ from tika import parser
 from sentence_transformers import SentenceTransformer
 import psycopg2
 from log_utils import setup_logger
+import numpy as np
 
 # Set up the logger
 logger = setup_logger()
@@ -42,11 +43,35 @@ def clean_text(text):
     # Remove extra spaces
     text = re.sub(r'\s+', ' ', text).strip()
     return text
-
+"""
 # Splitting Text into Chunks
 def chunk_text(text):
     sentences = text.split('.')
     return sentences
+"""
+def chunk_text(text, threshold=0.4):
+    # Split the document into individual sentences
+    sentences = re.split(r'(?<=[.!?])\s+', text) 
+    sentence_embeddings = model.encode(sentences, batch_size=32, convert_to_numpy=True)  # Batch for efficiency
+    
+    chunks = []
+    current_chunk = []
+    for idx in range(len(sentences) - 1):
+        current_chunk.append(sentences[idx])
+        
+        current_embedding = sentence_embeddings[idx]
+        next_embedding = sentence_embeddings[idx + 1]
+        
+        dist = np.linalg.norm(current_embedding - next_embedding)
+        if dist > threshold:
+            chunks.append(' '.join(current_chunk))
+            current_chunk = []
+    
+    # Add any remaining sentences to chunks
+    if current_chunk:
+        chunks.append(' '.join(current_chunk))
+    
+    return chunks
 
 # Store Chunks in PostgreSQL
 def store_in_db(file_name, text, file_type, file_path):
