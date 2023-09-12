@@ -19,6 +19,11 @@ DB_PARAMS = {
     'password': os.getenv('DB_PASSWORD', 'password')
 }
 
+ELASTIC_URL = os.getenv("ELASTIC_URL")
+ELASTIC_PASSWORD = os.getenv("ELASTIC_PASSWORD")
+ELASTIC_CERT_PATH = os.getenv("ELASTIC_CERT_PATH")
+
+
 # FAISS setup
 DIMENSION = 768
 faiss_index = faiss.IndexFlatL2(DIMENSION)
@@ -27,10 +32,11 @@ ELASTIC_PASSWORD = "2f7_-fUYsNvSoPtaa*be"
 
 # Create the client instance
 es = Elasticsearch(
-    "https://localhost:9200",
-    ca_certs="/Users/praveen/dev/database/kibana-8.9.2/data/ca_1694198172681.crt",
+    ELASTIC_URL,
+    ca_certs=ELASTIC_CERT_PATH,
     basic_auth=("elastic", ELASTIC_PASSWORD)
 )
+
 
 def connect_to_db(params):
     """Establish a connection to the PostgreSQL database."""
