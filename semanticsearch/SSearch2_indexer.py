@@ -28,8 +28,6 @@ ELASTIC_CERT_PATH = os.getenv("ELASTIC_CERT_PATH")
 DIMENSION = 768
 faiss_index = faiss.IndexFlatL2(DIMENSION)
 
-ELASTIC_PASSWORD = "2f7_-fUYsNvSoPtaa*be"
-
 # Create the client instance
 es = Elasticsearch(
     ELASTIC_URL,
