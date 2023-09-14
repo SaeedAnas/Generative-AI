@@ -4,12 +4,12 @@ import faiss
 import numpy as np
 from elasticsearch import Elasticsearch, helpers
 from sentence_transformers import SentenceTransformer, CrossEncoder
-import logging
+from helpers.log_utils import setup_logger
 import os
 
-# Setup logging
-logging.basicConfig(filename='searcher.log', level=logging.INFO, format='%(asctime)s - %(message)s')
-logger = logging.getLogger('searcher')
+# Set up the logger
+logger = setup_logger()
+logger.info("Begin of the Searcher")
 
 ELASTIC_URL = os.getenv("ELASTIC_URL")
 ELASTIC_PASSWORD = os.getenv("ELASTIC_PASSWORD")

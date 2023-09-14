@@ -3,7 +3,7 @@ import re
 from tika import parser
 from sentence_transformers import SentenceTransformer
 import psycopg2
-from log_utils import setup_logger
+from helpers.log_utils import setup_logger
 import numpy as np
 
 # Set up the logger

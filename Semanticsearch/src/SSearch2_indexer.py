@@ -4,12 +4,12 @@ import faiss
 import numpy as np
 import psycopg2
 from elasticsearch import Elasticsearch, helpers
-import logging
+from helpers.log_utils import setup_logger
 import os
 
-# Setup logging
-logging.basicConfig(filename='indexer.log', level=logging.INFO, format='%(asctime)s - %(message)s')
-logger = logging.getLogger('indexer')
+# Set up the logger
+logger = setup_logger()
+logger.info("Begin of the indexer")
 
 # Database connection parameters
 DB_PARAMS = {
