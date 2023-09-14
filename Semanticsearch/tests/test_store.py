@@ -1,6 +1,5 @@
 import pytest
-from src.helpers.text_utils import clean_text, chunk_text
-from src.main import store_in_db, process_directory
+from src.SSearch1_store import clean_text, chunk_text,store_in_db, process_directory
 import os
 import psycopg2
 
@@ -10,10 +9,10 @@ CLEANED_SAMPLE_TEXT = "hello world this is a test"
 SAMPLE_TEXT_CHUNKS = ["Hello, world!", "This is a test."]
 
 # Setup a mock database connection for testing
-DB_HOST = "localhost"  # Adjust as needed
-DB_NAME = "test_db"    # Adjust as needed
-DB_USER = "test_user"  # Adjust as needed
-DB_PASSWORD = "test_password"  # Adjust as needed
+DB_HOST = "localhost"  
+DB_NAME = "test_db"    
+DB_USER = "test_user"  
+DB_PASSWORD = "test_password"  
 
 # Sample file paths for testing
 SAMPLE_FILE_PATH = os.path.join(os.path.dirname(__file__), "test_data/sample.txt")
