@@ -1,58 +1,62 @@
 import os
-import re
+import spacy
+import numpy as np
+import psycopg2
 from tika import parser
 from sentence_transformers import SentenceTransformer
-import psycopg2
 from helpers.log_utils import setup_logger
-import numpy as np
+from psycopg2 import pool
+from tenacity import retry, wait_fixed, stop_after_attempt
 
-# Set up the logger
+# Constants and Global Variables
+MODEL_SBERT_768= 'sentence-transformers/all-mpnet-base-v2'
+MODEL_SBERT_384= 'sentence-transformers/all-MiniLM-L6-v2'
+MODEL_SPACY="en_core_web_sm"
+
+nlp = spacy.load(MODEL_SPACY)
+model = SentenceTransformer(MODEL_SBERT_384)
+
+# Logger setup
 logger = setup_logger()
-logger.info("Begin of the store.")
+logger.info("Initialization...")
 
-# Initialize SentenceTransformer
-model = SentenceTransformer('sentence-transformers/paraphrase-distilroberta-base-v1')
-
-# Extracting environment variables
+# Environment variables for DB connection
 DB_HOST = os.environ['DB_HOST']
 DB_NAME = os.environ['DB_NAME']
 DB_USER = os.environ['DB_USER']
 DB_PASSWORD = os.environ['DB_PASSWORD']
 
-# Connect to PostgreSQL
-try:
-    conn = psycopg2.connect(
-        host=DB_HOST,
-        database=DB_NAME,
-        user=DB_USER,
-        password=DB_PASSWORD
-    )
-    cur = conn.cursor()
-except Exception as e:
-    logger.error(f"Error connecting to the database: {e}")
-    exit()
+# Connection pooling
+db_pool = None
 
-# Text Preprocessing
+"""
+Retry Logic: For getting a database connection, better to keep this here
+If a connection fails, it will retry for 3 times, waiting 3 seconds between each attempt.
+"""
+@retry(wait=wait_fixed(3), stop=stop_after_attempt(3))
+def get_connection():
+    return db_pool.getconn()
+
+def release_connection(conn):
+    db_pool.putconn(conn)
+
+def initialize_pool():
+    global db_pool
+    db_pool = psycopg2.pool.SimpleConnectionPool(1, 20, host=DB_HOST, database=DB_NAME, user=DB_USER, password=DB_PASSWORD)
+    if db_pool:
+        logger.info("Database pool established.")
+    else:
+        logger.error("Failed to establish database pool.")
+        raise Exception("Failed to establish database pool.")
 def clean_text(text):
-    # Remove any HTML tags
-    text = re.sub(r'<.*?>', '', text)
-    # Remove non-alphanumeric characters
-    text = re.sub(r'[^a-zA-Z0-9\s]', '', text)
-    # Convert to lowercase
-    text = text.lower()
-    # Remove extra spaces
-    text = re.sub(r'\s+', ' ', text).strip()
-    return text
-"""
-# Splitting Text into Chunks
-def chunk_text(text):
-    sentences = text.split('.')
-    return sentences
-"""
+    doc = nlp(text)
+    tokens = [token.text for token in doc if not token.is_punct]
+    return ' '.join(tokens)
+
 def chunk_text(text, threshold=0.4):
-    # Split the document into individual sentences
-    sentences = re.split(r'(?<=[.!?])\s+', text) 
-    sentence_embeddings = model.encode(sentences, batch_size=32, convert_to_numpy=True)  # Batch for efficiency
+    doc = nlp(text)
+    sentences = [sent.text for sent in doc.sents]
+    sentence_embeddings = model.encode(sentences, batch_size=32, convert_to_numpy=True)
     
     chunks = []
     current_chunk = []
@@ -67,62 +71,51 @@ def chunk_text(text, threshold=0.4):
             chunks.append(' '.join(current_chunk))
             current_chunk = []
     
-    # Add any remaining sentences to chunks
     if current_chunk:
         chunks.append(' '.join(current_chunk))
     
     return chunks
 
-# Store Chunks in PostgreSQL
-def store_in_db(file_name, text, file_type, file_path):
-    """ Store parsed document details in PostgreSQL database """
-    try:
-        cur.execute("INSERT INTO documents (file_name, file_type, content) VALUES (%s, %s, %s) RETURNING id;", (file_name, file_type, text))
-        document_id = cur.fetchone()[0]
+def store_in_db(file_name, text, file_type, file_path, cursor):
+    chunks = chunk_text(clean_text(text))
+    cursor.execute("INSERT INTO documents (file_name, file_type, content) VALUES (%s, %s, %s) RETURNING id;", (file_name, file_type, text))
+    document_id = cursor.fetchone()[0]
 
-        # Store in metadata table
-        cur.execute("INSERT INTO metadata (document_id, file_path) VALUES (%s, %s) RETURNING id;", (document_id, file_path))
-        metadata_id = cur.fetchone()[0]  # Even though we don't use this, we still retrieve it to ensure no error
+    cursor.execute("INSERT INTO metadata (document_id, file_path) VALUES (%s, %s) RETURNING id;", (document_id, file_path))
+    for chunk in chunks:
+        chunk_vector = model.encode(chunk).tolist()
+        cursor.execute("INSERT INTO chunks (document_id, chunk_text, chunk_vector) VALUES (%s, %s, %s);", (document_id, chunk, chunk_vector))
 
-        # Store in chunks table
-        chunks = chunk_text(text)
-        for chunk in chunks:
-            chunk_vector = model.encode(chunk).tolist()
-            cur.execute("INSERT INTO chunks (document_id, chunk_text, chunk_vector) VALUES (%s, %s, %s);", (document_id, chunk, chunk_vector))
-
-        conn.commit()
-    except Exception as e:
-        logger.exception(f"Error storing data in the database for {file_name}: {e}")
-
-# Parse Documents and Store in DB
-def process_directory(input_directory):
-    """ Process each document in the specified directory and store its details in the database """
-    for root, _, files in os.walk(input_directory):
-        for file in files:
-            file_path = os.path.join(root, file)
-            logger.info(f"Processing {file_path}")
-
-            try:
-                file_name, file_type = os.path.splitext(file)  # This will separate the file's name and its extension
-            
+def process_directory(input_directory, conn):
+    with conn.cursor() as cur:
+        for root, _, files in os.walk(input_directory):
+            for file in files:
+                file_path = os.path.join(root, file)
+                logger.info(f"Processing {file_path}")
+                file_name, file_type = os.path.splitext(file)
+                
                 parsed = parser.from_file(file_path)
                 content = parsed["content"]
-                    
                 if content:
-                    cleaned_content = clean_text(content)
-                    store_in_db(file_name, cleaned_content, file_type, file_path)
-            except Exception as e:
-                logger.exception(f"Error processing file {file_path}: {e}")
+                    store_in_db(file_name, content, file_type, file_path, cur)
+                conn.commit()  # we can commit at the end of each file for progress persistence
 
+def main():
+    try:
+        initialize_pool()
+        input_directory = input("Enter the path to the directory containing the files: ").strip()
+        conn = get_connection()
+        process_directory(input_directory, conn)
+    except KeyboardInterrupt:
+        logger.warning("Interrupted by user.")
+    except psycopg2.OperationalError:
+        logger.error("Database operational error occurred. Retrying...")
+    except Exception as e:
+        logger.exception(f"Unexpected error during processing: {e}")
+    finally:
+        if db_pool:
+            db_pool.closeall()
+            logger.info("Closed all database connections.")
 
 if __name__ == "__main__":
-    input_directory = input("Enter the path to the directory containing the files: ").strip()
-    
-    process_directory(input_directory)
-    
-    # Closing database connections
-    try:
-        cur.close()
-        conn.close()
-    except Exception as e:
-        logger.exception(f"Error closing the database connection: {e}")
+    main()

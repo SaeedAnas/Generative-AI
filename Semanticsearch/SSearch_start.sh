@@ -1,32 +1,19 @@
 #!/bin/bash
 
-# location of tika server jar, edit this
-export TIKA_SERVER_JAR="file:///Users/praveen/dev/project-SV/Assignment1/tika-jar/tika-server-standard-2.9.0.jar"
+# Source the configuration file
+source config.txt
 
-# location of input document file
-echo "Input document files:  /path/to/data_files"
-
-# Database configuration, 
-export DB_HOST="localhost"
-export DB_NAME="postgres"
-export DB_PORT="5432"
-# Edit this
-export DB_USER="praveen"
-export DB_PASSWORD="password"
-
-# Elastic search, edit
-export ELASTIC_URL="https://localhost:9200"
-export ELASTIC_PASSWORD="2f7_-fUYsNvSoPtaa*be"
-export ELASTIC_CERT_PATH="~/dev/database/kibana-8.9.2/data/ca_1694198172681.crt"
+# Assuming the tika-jar directory is located in your Git repository directory
+export TIKA_SERVER_JAR="file://$PWD/data/tika-jar/tika-server-standard-2.9.0.jar"
 
 # Drop tables
-#psql -h $DB_HOST -p $DB_PORT -U $DB_USER -d $DB_NAME -c "DROP TABLE IF EXISTS documents CASCADE;"
-#psql -h $DB_HOST -p $DB_PORT -U $DB_USER -d $DB_NAME -c "DROP TABLE IF EXISTS chunks CASCADE;"
-#psql -h $DB_HOST -p $DB_PORT -U $DB_USER -d $DB_NAME -c "DROP TABLE IF EXISTS metadata CASCADE;"
+psql -h $DB_HOST -p $DB_PORT -U $DB_USER -d $DB_NAME -c "DROP TABLE IF EXISTS documents CASCADE;"
+psql -h $DB_HOST -p $DB_PORT -U $DB_USER -d $DB_NAME -c "DROP TABLE IF EXISTS chunks CASCADE;"
+psql -h $DB_HOST -p $DB_PORT -U $DB_USER -d $DB_NAME -c "DROP TABLE IF EXISTS metadata CASCADE;"
 
 echo "Tables 'chunks' and 'metadata' and 'documents' dropped successfully!"
 
-python setup_db.py
-python SSearch1_store.py
+python src/helpers/setup_db.py
+python src/SSearch1_store.py
 #python SSearch2_index.py
 #python SSearch3_query.py
