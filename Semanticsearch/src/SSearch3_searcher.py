@@ -76,6 +76,7 @@ def search(query, top_k=10, rerank_k=5):
         logger.error(f"Error during search: {e}")
         return []
 
+"""
 if __name__ == "__main__":
     query = input("Enter your search query: ").strip()
     if not query:
@@ -89,3 +90,4 @@ if __name__ == "__main__":
         print(f"Rank: {rank}, Score: {score:.4f}")
         print(doc["_source"]["text"])
         print("-" * 80)
+"""
