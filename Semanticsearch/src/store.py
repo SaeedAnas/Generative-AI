@@ -1,7 +1,8 @@
 import pandas as pd
-from pyspark.sql.types import StringType, ArrayType, FloatType, Row
+from pyspark.sql.types import StringType, ArrayType, FloatType, IntegerType, Row
 from pyspark.sql.functions import udf, pandas_udf
 from pyspark.sql import SparkSession
+from pyspark.conf import SparkConf
 
 import findspark
 findspark.init()
@@ -101,6 +102,8 @@ def write_to_db(row, conn):
     
     conn.commit()
 
+    return document_id
+
 MODEL_SBERT_768 = 'sentence-transformers/all-mpnet-base-v2'
 MODEL_SBERT_384 = 'sentence-transformers/all-MiniLM-L6-v2'
 MODEL_SPACY = "en_core_web_sm"
@@ -136,14 +139,21 @@ def encode_chunks_udf(documents: pd.Series) -> pd.Series:
     return pd.Series(embeddings)
 
 
-def wrtie_to_db_map(rows):
+@pandas_udf(IntegerType())
+def write_to_db_udf(documents: pd.Series) -> pd.Series:
     with psycopg.connect(conninfo) as conn:
-        for row in rows:
-            write_to_db(row, conn)
+        ids = [write_to_db(document, conn) for document in documents]
+        return pd.Series(ids)
 
 PATH = "/Users/anassaeed/code/nlp/GenAI/SemanticSearch/src"
 
+conf = SparkConf()
+# Set elasticsearch-hadoop jar
+# conf.set("spark.jars", "/Users/anassaeed/code/nlp/GenAI/SemanticSearch/data/elasticsearch-hadoop-8.10.0.jar")
+# conf.set("es.index.auto.create", "true")
+
 spark = SparkSession.builder \
+    .config(conf=conf) \
     .appName("Text Extraction") \
     .master("local[*]") \
     .getOrCreate()
@@ -151,6 +161,20 @@ sc = spark.sparkContext
 
 nlp_b = sc.broadcast(nlp)
 model_b = sc.broadcast(model)
+
+# es_conf = {
+#     "es.nodes": "localhost",
+#     "es.port": "9200",
+#     "es.net.http.auth.user": "elastic",
+#     "es.net.http.auth.pass": "changeme",
+# }
+
+# es_rdd = sc.newAPIHadoopRDD(
+#     inputFormatClass="org.elasticsearch.hadoop.mr.EsInputFormat",
+#     keyClass="org.apache.hadoop.io.NullWritable",
+#     valueClass="org.elasticsearch.hadoop.mr.LinkedMapWritable",
+#     conf=es_conf
+# )
 
 files = get_files(PATH)
 
@@ -164,8 +188,16 @@ def pipeline(files):
     df = df.withColumn("chunks", clean_text_udf(df.content))
     # Then we need to encode the chunks
     df = df.withColumn("embeddings", encode_chunks_udf(df.chunks))
+    # Then we need to write the data to the database
+    df = df.withColumn("document_id", write_to_db_udf(df))
     return df
 
 df = pipeline(files)
-df.foreachPartition(wrtie_to_db_map)
+
+df.show()
+# def index_elasticsearch_map(rows):
+
+# df.foreachPartition(index_elasticsearch_map)
+# df.foreachPartition(index_faiss_map)
+
 db.close()
