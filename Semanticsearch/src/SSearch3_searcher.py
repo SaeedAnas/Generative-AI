@@ -11,9 +11,13 @@ import os
 logger = setup_logger()
 logger.info("Begin of the Searcher")
 
+# Constants and Global Variables
 ELASTIC_URL = os.getenv("ELASTIC_URL")
 ELASTIC_PASSWORD = os.getenv("ELASTIC_PASSWORD")
 ELASTIC_CERT_PATH = os.getenv("ELASTIC_CERT_PATH")
+
+MODEL_SBERT_768 = os.environ['MODEL_SBERT_768'] 
+MODEL_SBERT_384 = os.environ['MODEL_SBERT_384'] 
 
 # Create the client instance
 es = Elasticsearch(
@@ -24,16 +28,29 @@ es = Elasticsearch(
 
 # FAISS and Transformer setup
 DIMENSION = 768
-faiss_index = faiss.read_index('faiss_index.index')
-print(f"Number of vectors in FAISS index: {faiss_index.ntotal}")
+try:
+    faiss_index = faiss.read_index('faiss_index.index')
+    logger.info(f"Number of vectors in FAISS index: {faiss_index.ntotal}")
+except Exception as e:
+    logger.error(f"Error reading FAISS index: {e}")
+    exit(1)  # Exit if cannot read the index
 
-bi_encoder = SentenceTransformer('sentence-transformers/paraphrase-distilroberta-base-v1')
-cross_encoder = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2')
+bi_encoder = None
+cross_encoder = None
+try:
+    bi_encoder = SentenceTransformer('sentence-transformers/paraphrase-distilroberta-base-v1')
+    cross_encoder = CrossEncoder(MODEL_SBERT_384)
+except Exception as e:
+    logger.error(f"Error loading models: {e}")
+    exit(1)  # Exit if cannot load the models
 
 def search(query, top_k=10, rerank_k=5):
-    """Execute the hybrid search mechanism with re-ranking."""
-    logger.info(f"Searching for query: {query}")
+    """Execute the hybrid search with re-ranking."""
+    if not query:
+        logger.warning("Received an empty query. Aborting search.")
+        return []
 
+    logger.info(f"Searching for query: {query}")
     try:
         # Step 1: Use bi-encoder to get query vector
         query_vector = bi_encoder.encode(query, convert_to_numpy=True)
@@ -61,6 +78,10 @@ def search(query, top_k=10, rerank_k=5):
 
 if __name__ == "__main__":
     query = input("Enter your search query: ").strip()
+    if not query:
+        logger.warning("Empty search query received.")
+        exit(0)  # End the program if the query is empty
+
     search_results = search(query)
     
     # Printing the search results 
