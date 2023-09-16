@@ -9,9 +9,15 @@ from psycopg2 import pool
 from tenacity import retry, wait_fixed, stop_after_attempt
 
 # Constants and Global Variables
-MODEL_SBERT_768= 'sentence-transformers/all-mpnet-base-v2'
-MODEL_SBERT_384= 'sentence-transformers/all-MiniLM-L6-v2'
-MODEL_SPACY="en_core_web_sm"
+MODEL_SBERT_768 = os.environ['MODEL_SBERT_768'] 
+MODEL_SBERT_384 = os.environ['MODEL_SBERT_384'] 
+MODEL_SPACY = os.environ['MODEL_SPACY'] 
+
+# Environment variables for DB connection
+DB_HOST = os.environ['DB_HOST']
+DB_NAME = os.environ['DB_NAME']
+DB_USER = os.environ['DB_USER']
+DB_PASSWORD = os.environ['DB_PASSWORD']
 
 nlp = spacy.load(MODEL_SPACY)
 model = SentenceTransformer(MODEL_SBERT_384)
@@ -19,12 +25,6 @@ model = SentenceTransformer(MODEL_SBERT_384)
 # Logger setup
 logger = setup_logger()
 logger.info("Initialization...")
-
-# Environment variables for DB connection
-DB_HOST = os.environ['DB_HOST']
-DB_NAME = os.environ['DB_NAME']
-DB_USER = os.environ['DB_USER']
-DB_PASSWORD = os.environ['DB_PASSWORD']
 
 # Connection pooling
 db_pool = None
@@ -60,8 +60,8 @@ def chunk_text(text, threshold=0.4):
     
     chunks = []
     current_chunk = []
-    for idx in range(len(sentences) - 1):
-        current_chunk.append(sentences[idx])
+    for idx, sentence in enumerate(sentences[:-1]):
+        current_chunk.append(sentence)
         
         current_embedding = sentence_embeddings[idx]
         next_embedding = sentence_embeddings[idx + 1]
