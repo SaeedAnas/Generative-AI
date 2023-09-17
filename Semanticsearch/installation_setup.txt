@@ -47,8 +47,19 @@ Installation Setup for the Semantic search on Mac
     ./bin/kibana
     http://localhost:5601/
     user: elastic
-    password: 2f7_-fUYsNvSoPtaa*be
+    password: XXXXXX
 
 # Eleastisearch python client
 https://www.elastic.co/guide/en/elasticsearch/client/python-api/current/getting-started-python.html
 
+# .gitignore python
+https://github.com/github/gitignore/blob/main/Python.gitignore
+
+#spacy
+pip install spacy
+pip install pytest
+pip install spacy-cleaner
+
+# GUI
+pip3 install 'uvicorn[standard]'
+pip install jinja2
