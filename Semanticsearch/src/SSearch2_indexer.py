@@ -25,7 +25,7 @@ ELASTIC_CERT_PATH = os.getenv("ELASTIC_CERT_PATH")
 
 
 # FAISS setup
-DIMENSION = 768
+DIMENSION = 768 
 faiss_index = faiss.IndexFlatL2(DIMENSION)
 
 # Create the client instance
