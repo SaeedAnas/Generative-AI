@@ -39,7 +39,7 @@ bi_encoder = None
 cross_encoder = None
 try:
     bi_encoder = SentenceTransformer('sentence-transformers/paraphrase-distilroberta-base-v1')
-    cross_encoder = CrossEncoder(MODEL_SBERT_384)
+    cross_encoder = CrossEncoder(MODEL_SBERT_768)
 except Exception as e:
     logger.error(f"Error loading models: {e}")
     exit(1)  # Exit if cannot load the models
@@ -76,9 +76,9 @@ def search(query, top_k=10, rerank_k=5):
         logger.error(f"Error during search: {e}")
         return []
 
-"""
+
 if __name__ == "__main__":
-    query = input("Enter your search query: ").strip()
+    query = input("what is spark: ").strip()
     if not query:
         logger.warning("Empty search query received.")
         exit(0)  # End the program if the query is empty
@@ -90,4 +90,3 @@ if __name__ == "__main__":
         print(f"Rank: {rank}, Score: {score:.4f}")
         print(doc["_source"]["text"])
         print("-" * 80)
-"""
