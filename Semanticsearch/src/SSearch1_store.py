@@ -9,8 +9,7 @@ from psycopg2 import pool
 from tenacity import retry, wait_fixed, stop_after_attempt
 
 # Constants and Global Variables
-MODEL_SBERT_768 = os.environ['MODEL_SBERT_768'] 
-MODEL_SBERT_384 = os.environ['MODEL_SBERT_384'] 
+MODEL_SBERT = os.environ['MODEL_SBERT'] 
 MODEL_SPACY = os.environ['MODEL_SPACY'] 
 
 # Environment variables for DB connection
@@ -27,7 +26,7 @@ sentencizer = nlp.add_pipe("sentencizer", config=config)
 nlp.max_length = 5000011
 #print(nlp.pipe_names)
 
-model = SentenceTransformer(MODEL_SBERT_768)
+model = SentenceTransformer(MODEL_SBERT)
 
 # Logger setup
 logger = setup_logger()
@@ -69,7 +68,7 @@ def chunk_text(text, threshold=0.2):
     if len(sentences) == 1:
         return sentences
     sentence_embeddings = model.encode(sentences, batch_size=32, convert_to_numpy=True)
-    print("Number of sentences:", len(sentences))
+    #print("Number of sentences:", len(sentences))
 
     chunks = []
     current_chunk = []
@@ -116,13 +115,13 @@ def split_large_text(text, max_length=1000000):
 
 def store_in_db(file_name, text, file_type, file_path, cursor):
     chunks = chunk_text(clean_text(text))
-    print(f'chunks : {chunks}')
+    #print(f'chunks : {chunks}')
     cursor.execute("INSERT INTO documents (file_name, file_type, content) VALUES (%s, %s, %s) RETURNING id;", (file_name, file_type, text))
     document_id = cursor.fetchone()[0]
 
     cursor.execute("INSERT INTO metadata (document_id, file_path) VALUES (%s, %s) RETURNING id;", (document_id, file_path))
     for chunk in chunks:
-        print(f'chunks :  {chunk}')
+        #print(f'chunks :  {chunk}')
         chunk_vector = model.encode(chunk).tolist()
         cursor.execute("INSERT INTO chunks (document_id, chunk_text, chunk_vector) VALUES (%s, %s, %s);", (document_id, chunk, chunk_vector))
 
