@@ -74,7 +74,7 @@ def search(query, top_k=10, rerank_k=5,search_type='text'):
     try:
         query_vector = bi_encoder.encode(query, convert_to_numpy=True)
         _, faiss_indices = faiss_index.search(query_vector.reshape(1, DIMENSION), top_k)
-        semantic_hits = [es.get(index="document_index", id=index_id)["_source"]["text"] for index_id in faiss_indices[0]]
+        semantic_hits = [es.get(index="document_index", id=index_id+1)["_source"]["text"] for index_id in faiss_indices[0]]
 
     except Exception as e:
         logger.error(f"Error during FAISS search: {e}")
@@ -96,13 +96,20 @@ def search(query, top_k=10, rerank_k=5,search_type='text'):
         # Check if we are in the context of an API request or standalone execution
         if 'fastapi' in sys.modules:
             # Return as a list of dictionaries for API compatibility
-            #return [{"text": result["_source"]["text"], "score": result["score"]} for result in sorted_results]
-            formatted_results = [{"text": result[0], "score": result[1]} for result in sorted_results]
-            return {"result": formatted_results}
+            results = [{"text": text, "score": float(score)} for text, score in sorted_results]
+            #logger.info(f"Results: {results}")
+            #print(f"Results: {results}")
+            return results
+
         else:
             # Return as a list of tuples for standalone compatibility
             #return [(result["_source"]["text"], result["score"]) for result in sorted_results]
             return [(text, score) for text, score in sorted_results]
+            logger.info(f"Results: {results}")
+            #print(f"Results: {results}")
+            #return results
+
+
 
     except Exception as e:
         logger.error(f"Error during re-ranking: {e}")
