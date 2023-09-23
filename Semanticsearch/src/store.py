@@ -141,10 +141,6 @@ def encode_chunks_udf(documents: pd.Series) -> pd.Series:
                   for chunks in documents]
     return pd.Series(embeddings)
 
-
-# PATH = "/Users/anassaeed/code/nlp/GenAI/SemanticSearch/src"
-PATH = "/Users/anassaeed/Downloads/TEST"
-
 conf = SparkConf()
 
 spark = SparkSession.builder \
@@ -156,6 +152,8 @@ sc = spark.sparkContext
 
 nlp_b = sc.broadcast(nlp)
 model_b = sc.broadcast(model)
+
+PATH = "/Users/anassaeed/Documents/TEST"
 
 files = get_files(PATH)
 

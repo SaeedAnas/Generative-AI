@@ -39,12 +39,24 @@ class FaissService:
     async def add(self, vectors, ids):
         vectors = np.asarray(vectors)
         
-        if vectors.shape[1] != 384:
+        if vectors.shape[1] != 768:
             logging.error(f"Invalid vectors: {vectors}")
             return
 
         await self.lock.acquire_write()
         self.index.add(vectors)
+        await self.lock.release_write()
+        
+    async def add_with_ids(self, vectors, ids):
+        vectors = np.asarray(vectors)
+        ids = np.asarray(ids)
+        
+        if vectors.shape[1] != 768:
+            logging.error(f"Invalid vectors: {vectors}")
+            return
+        
+        await self.lock.acquire_write()
+        self.index.add_with_ids(vectors, ids)
         await self.lock.release_write()
 
     async def search(self, vectors, k):
@@ -69,5 +81,7 @@ def create_or_load_index(path):
     try:
         index = faiss.read_index(path)
     except:
-        index = faiss.IndexFlatL2(384)
+        index = faiss.IndexFlatL2(768)
+        index = faiss.IndexIDMap2(index)
+        
     return index

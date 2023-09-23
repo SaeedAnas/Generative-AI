@@ -77,8 +77,11 @@
     </div>
 
     <div ng-repeat="result in searchResults">
+        <p><strong>Id:</strong> {{ result.id }}</p>
+        <p><strong>Document_id:</strong> {{ result.document_id }} </p>
         <p><strong>Text:</strong> {{ result.chunk_text }}</p>
         <p><strong>Score:</strong> {{ result.score }}</p>
+        <p><strong>Source:</strong> {{ result.source }}</p>
         <hr>
     </div>
 

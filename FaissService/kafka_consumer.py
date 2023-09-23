@@ -143,7 +143,7 @@ class KafkaConsumer:
                     vectors = np.array(vectors)
                     ids = np.array(ids)
                     
-                    await self.faiss_handler.add(vectors, ids)
+                    await self.faiss_handler.add_with_ids(vectors, ids)
                     self.local_state.add_counts(tp, counts, msg.offset)
                     logging.info(f"Processed {len(msgs)} messages from {tp}")
         except Exception as e:

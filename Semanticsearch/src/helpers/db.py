@@ -1,7 +1,8 @@
 from psycopg_pool import ConnectionPool
-from src.settings import settings
+# from settings import settings
 
-conninfo = f"dbname={settings.POSTGRES_DB} user={settings.POSTGRES_USER} password={settings.POSTGRES_PASSWORD} host={settings.POSTGRES_HOST} port={settings.POSTGRES_PORT}"
+# conninfo = f"dbname={settings.POSTGRES_DB} user={settings.POSTGRES_USER} password={settings.POSTGRES_PASSWORD} host={settings.POSTGRES_HOST} port={settings.POSTGRES_PORT}"
+conninfo = "dbname=postgres user=postgres password=example host=localhost port=5432"
 
 SCHEMA = {
     "documents": """

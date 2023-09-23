@@ -5,13 +5,15 @@ class SearchResult(BaseModel):
     document_id: int
     chunk_text: str
     score: float = 1.0
+    source: str = "faiss"
     
     def from_es_hit(hit):
         return SearchResult(
             id=hit["_source"]["id"],
             document_id=hit["_source"]["document_id"],
-            text=hit["_source"]["chunk_text"],
-            score=hit["_score"]
+            chunk_text=hit["_source"]["chunk_text"],
+            score=hit["_score"],
+            source="es"
         )
         
 class SearchQuery(BaseModel):

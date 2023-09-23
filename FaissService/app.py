@@ -7,6 +7,7 @@ import faiss_handler
 import kafka_consumer
 from settings import settings
 import logging
+import uvicorn
 
 
 class Query(BaseModel):
@@ -56,3 +57,6 @@ async def query(query: Query):
 @app.get("/_count")
 async def count():
     return await faiss_service.count()
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)

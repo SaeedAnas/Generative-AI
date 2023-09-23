@@ -20,7 +20,8 @@ es = Elasticsearch(
 
 FAISS_URL = f"http://{settings.FAISS_HOST}:{settings.FAISS_PORT}"
 
-bi_encoder = SentenceTransformer('sentence-transformers/paraphrase-distilroberta-base-v1')
+# bi_encoder = SentenceTransformer('sentence-transformers/paraphrase-distilroberta-base-v1')
+bi_encoder = SentenceTransformer('sentence-transformers/all-mpnet-base-v2')
 cross_encoder = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-12-v2')
 
 
@@ -91,8 +92,12 @@ def ssearch(query, top_k):
     results = es_results + faiss_results
     results = rerank(query, results)
     return results
-    
-            
+
+def ssearch_vector(query, top_k=10):
+    ids = search_faiss(query, top_k)
+    faiss_results = fetch_chunk_ids(ids)
+    return faiss_results
+
 if __name__ == "__main__":
     # Test the search function
     query = "What is diffusion?"
