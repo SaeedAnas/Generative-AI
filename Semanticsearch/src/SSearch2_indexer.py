@@ -4,12 +4,10 @@ import faiss
 import numpy as np
 import psycopg2
 from elasticsearch import Elasticsearch, helpers
-from helpers.log_utils import setup_logger
 import os
+import logging
 
-# Set up the logger
-logger = setup_logger()
-logger.info("Begin of the indexer")
+logging.info("Begin of the indexer")
 
 import os
 
@@ -40,15 +38,15 @@ def connect_to_db(params):
     """Establish a connection to the PostgreSQL database."""
     try:
         conn = psycopg2.connect(**params)
-        logger.info("Successfully connected to the database.")
+        logging.info("Successfully connected to the database.")
         return conn
     except Exception as e:
-        logger.error(f"Error connecting to database: {e}")
+        logging.error(f"Error connecting to database: {e}")
         return None
 
 def index_data(conn):
     """Fetch data from the database and index it in Elasticsearch and FAISS."""
-    logger.info("Starting indexing process...")
+    logging.info("Starting indexing process...")
 
     cur = conn.cursor()
 
@@ -90,11 +88,11 @@ def index_data(conn):
             
         # Bulk index in Elasticsearch
         helpers.bulk(es, actions)
-        logger.info(f"Indexed {len(actions)} chunks into Elasticsearch.")
+        logging.info(f"Indexed {len(actions)} chunks into Elasticsearch.")
 
         # Save FAISS index to disk
         faiss.write_index(index_id_map, 'faiss_index.index')
-        logger.info("Saved FAISS index to disk.")
+        logging.info("Saved FAISS index to disk.")
     
     except Exception as e:
         logger.error(f"Error during indexing: {e}")

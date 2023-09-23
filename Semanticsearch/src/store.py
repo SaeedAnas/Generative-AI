@@ -110,7 +110,7 @@ MODEL_SBERT_768 = 'sentence-transformers/all-mpnet-base-v2'
 MODEL_SBERT_384 = 'sentence-transformers/all-MiniLM-L6-v2'
 MODEL_SPACY = "en_core_web_sm"
 nlp = spacy.load(MODEL_SPACY)
-model = SentenceTransformer(MODEL_SBERT_384)
+model = SentenceTransformer(MODEL_SBERT_768)
 
 
 def parse_file_map(path):

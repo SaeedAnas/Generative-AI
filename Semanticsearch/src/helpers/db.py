@@ -1,6 +1,7 @@
 from psycopg_pool import ConnectionPool
+from src.settings import settings
 
-conninfo = "dbname=postgres user=postgres password=example host=localhost port=5432"
+conninfo = f"dbname={settings.POSTGRES_DB} user={settings.POSTGRES_USER} password={settings.POSTGRES_PASSWORD} host={settings.POSTGRES_HOST} port={settings.POSTGRES_PORT}"
 
 SCHEMA = {
     "documents": """
@@ -59,7 +60,6 @@ class DB:
 
 
 db = DB()
-
 
 if __name__ == "__main__":
     db.drop_tables()

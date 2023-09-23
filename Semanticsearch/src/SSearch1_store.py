@@ -4,9 +4,9 @@ import numpy as np
 import psycopg2
 from tika import parser
 from sentence_transformers import SentenceTransformer
-from helpers.log_utils import setup_logger
 from psycopg2 import pool
 from tenacity import retry, wait_fixed, stop_after_attempt
+import logging
 
 # Constants and Global Variables
 MODEL_SBERT = os.environ['MODEL_SBERT'] 
@@ -29,8 +29,7 @@ nlp.max_length = 5000011
 model = SentenceTransformer(MODEL_SBERT)
 
 # Logger setup
-logger = setup_logger()
-logger.info("Initialization...")
+logging.info("Initialization...")
 
 # Connection pooling
 db_pool = None
@@ -55,9 +54,9 @@ def initialize_pool():
     db_pool = psycopg2.pool.SimpleConnectionPool(
         1, 20, host=DB_HOST, database=DB_NAME, user=DB_USER, password=DB_PASSWORD)
     if db_pool:
-        logger.info("Database pool established.")
+        logging.info("Database pool established.")
     else:
-        logger.error("Failed to establish database pool.")
+        logging.error("Failed to establish database pool.")
         raise Exception("Failed to establish database pool.")
 def clean_text(text):
     doc = nlp(text)
@@ -137,7 +136,7 @@ def process_directory(input_directory, conn):
         for root, _, files in os.walk(input_directory):
             for file in files:
                 file_path = os.path.join(root, file)
-                logger.info(f"Processing {file_path}")
+                logging.info(f"Processing {file_path}")
                 file_name, file_type = os.path.splitext(file)
 
                 parsed = parser.from_file(file_path)
@@ -159,15 +158,15 @@ def main():
         conn = get_connection()
         process_directory(input_directory, conn)
     except KeyboardInterrupt:
-        logger.warning("Interrupted by user.")
+        logging.warning("Interrupted by user.")
     except psycopg2.OperationalError:
-        logger.error("Database operational error occurred. Retrying...")
+        logging.error("Database operational error occurred. Retrying...")
     except Exception as e:
-        logger.exception(f"Unexpected error during processing: {e}")
+        logging.exception(f"Unexpected error during processing: {e}")
     finally:
         if db_pool:
             db_pool.closeall()
-            logger.info("Closed all database connections.")
+            logging.info("Closed all database connections.")
 
 
 if __name__ == "__main__":
