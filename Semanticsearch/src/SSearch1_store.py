@@ -9,8 +9,7 @@ from psycopg2 import pool
 from tenacity import retry, wait_fixed, stop_after_attempt
 
 # Constants and Global Variables
-MODEL_SBERT_768 = os.environ['MODEL_SBERT_768'] 
-MODEL_SBERT_384 = os.environ['MODEL_SBERT_384'] 
+MODEL_SBERT = os.environ['MODEL_SBERT'] 
 MODEL_SPACY = os.environ['MODEL_SPACY'] 
 
 # Environment variables for DB connection
@@ -20,7 +19,14 @@ DB_USER = os.environ['DB_USER']
 DB_PASSWORD = os.environ['DB_PASSWORD']
 
 nlp = spacy.load(MODEL_SPACY)
-model = SentenceTransformer(MODEL_SBERT_384)
+config = {"punct_chars": [".", "?", "!", "。","    "]}
+sentencizer = nlp.add_pipe("sentencizer", config=config)
+
+#nlp = spacy.load(MODEL_SPACY, disable=["ner","tok2vec", "tagger", "parser", "attribute_ruler", "lemmatizer"])
+nlp.max_length = 5000011
+#print(nlp.pipe_names)
+
+model = SentenceTransformer(MODEL_SBERT)
 
 # Logger setup
 logger = setup_logger()
@@ -53,25 +59,26 @@ def initialize_pool():
     else:
         logger.error("Failed to establish database pool.")
         raise Exception("Failed to establish database pool.")
-
-
 def clean_text(text):
     doc = nlp(text)
     tokens = [token.text for token in doc if not token.is_punct]
     return ' '.join(tokens)
 
-
-def chunk_text(text, threshold=0.4):
+def chunk_text(text, threshold=0.2):
     doc = nlp(text)
     sentences = [sent.text for sent in doc.sents]
-    sentence_embeddings = model.encode(
-        sentences, batch_size=32, convert_to_numpy=True)
+
+    # Handle case where there's only one sentence
+    if len(sentences) == 1:
+        return sentences
+    sentence_embeddings = model.encode(sentences, batch_size=32, convert_to_numpy=True)
+    #print("Number of sentences:", len(sentences))
 
     chunks = []
     current_chunk = []
     for idx, sentence in enumerate(sentences[:-1]):
         current_chunk.append(sentence)
-        
+       
         current_embedding = sentence_embeddings[idx]
         next_embedding = sentence_embeddings[idx + 1]
 
@@ -85,16 +92,41 @@ def chunk_text(text, threshold=0.4):
 
     return chunks
 
+def split_large_text(text, max_length=1000000):
+    """
+    Splits a large text into chunks, respecting natural boundaries such as paragraphs.
+    Tries to create chunks close to `max_length` without breaking paragraphs.
+    """
+    # Split by line breaks for paragraphs/sections
+    sections = [section for section in text.split("\n") if section]
+
+    chunks = []
+    current_chunk = ""
+
+    for section in sections:
+        # If the current chunk plus the next section is below the max_length
+        if len(current_chunk) + len(section) <= max_length:
+            current_chunk += section + "\n"
+        else:
+            # If adding the next section exceeds the max_length, store the current chunk
+            chunks.append(current_chunk.strip())  # Remove trailing newline
+            current_chunk = section + "\n"
+    
+    if current_chunk:
+        chunks.append(current_chunk.strip())  # Remove trailing newline
+
+    return chunks
 
 def store_in_db(file_name, text, file_type, file_path, cursor):
     chunks = chunk_text(clean_text(text))
-    cursor.execute("INSERT INTO documents (file_name, file_type, content) VALUES (%s, %s, %s) RETURNING id;",
-                   (file_name, file_type, text))
+    #print(f'chunks : {chunks}')
+    cursor.execute("INSERT INTO documents (file_name, file_type, content) VALUES (%s, %s, %s) RETURNING id;", (file_name, file_type, text))
     document_id = cursor.fetchone()[0]
 
     cursor.execute(
         "INSERT INTO metadata (document_id, file_path) VALUES (%s, %s) RETURNING id;", (document_id, file_path))
     for chunk in chunks:
+        #print(f'chunks :  {chunk}')
         chunk_vector = model.encode(chunk).tolist()
         cursor.execute("INSERT INTO chunks (document_id, chunk_text, chunk_vector) VALUES (%s, %s, %s);",
                        (document_id, chunk, chunk_vector))
@@ -111,8 +143,12 @@ def process_directory(input_directory, conn):
                 parsed = parser.from_file(file_path)
                 content = parsed["content"]
                 if content:
+                    # Split the content into smaller chunks
+                    #chunks = split_large_text(content)
+                    #for chunk in chunks:
                     store_in_db(file_name, content, file_type, file_path, cur)
                 conn.commit()  # we can commit at the end of each file for progress persistence
+
 
 
 def main():
