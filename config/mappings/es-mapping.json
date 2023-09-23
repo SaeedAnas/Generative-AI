@@ -1,0 +1,21 @@
+{
+    "mappings": {
+        "properties": {
+            "chunk_text": {
+                "type": "text",
+                "fields": {
+                    "keyword": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "document_id": {
+                "type": "integer"
+            },
+            "id": {
+                "type": "integer",
+                "null_value": 0
+            }
+        }
+    }
+}

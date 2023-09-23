@@ -28,6 +28,8 @@ SCHEMA = {
         chunk_vector FLOAT8[] NOT NULL,
         FOREIGN KEY (document_id) REFERENCES documents(id)
     );
+    
+    ALTER TABLE chunks REPLICA IDENTITY FULL;
     """
 }
 
@@ -57,3 +59,8 @@ class DB:
 
 
 db = DB()
+
+
+if __name__ == "__main__":
+    db.drop_tables()
+    db.create_tables()

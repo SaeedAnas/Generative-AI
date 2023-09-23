@@ -1,3 +1,12 @@
+import psycopg
+from helpers.db import db
+import os
+import numpy as np
+import time
+from sentence_transformers import SentenceTransformer
+import spacy
+import glob
+from tika import parser
 import pandas as pd
 from pyspark.sql.types import StringType, ArrayType, FloatType, IntegerType, Row
 from pyspark.sql.functions import udf, pandas_udf
@@ -7,21 +16,8 @@ from pyspark.conf import SparkConf
 import findspark
 findspark.init()
 
-from tika import parser
-
-import glob
-
-import spacy
-from sentence_transformers import SentenceTransformer
-import time
-import numpy as np
-import os
-
-from helpers.db import db
-# db.drop_tables()
-# db.create_tables()
-import psycopg
 conninfo = "dbname=postgres user=postgres password=example host=localhost port=5432"
+
 
 def get_files(path):
     """
@@ -46,22 +42,27 @@ def checkpoint(start):
     end = time.time()
     print(f"Time elapsed: {end - start} seconds")
 
+
 def remove_punctuation_and_stopwords(text):
     tokens = [
         token.text for token in text if not token.is_punct and not token.is_stop]
     return ' '.join(tokens)
 
+
 def remove_punctuation(text):
     tokens = [token.text for token in text if not token.is_punct]
     return ' '.join(tokens)
 
+
 def extract_sentences(text):
+    # sentences = [remove_punctuation_and_stopwords(sent) for sent in text.sents]
     sentences = [remove_punctuation_and_stopwords(sent) for sent in text.sents]
     vectors = np.stack([sent.vector / sent.vector_norm for sent in text.sents])
 
     return sentences, vectors
 
-def chunk_text_spacy(sentences, vectors, threshold=0.4):
+
+def chunk_text_spacy(sentences, vectors, threshold=0.7):
     chunks = []
     current_chunk = []
 
@@ -78,6 +79,7 @@ def chunk_text_spacy(sentences, vectors, threshold=0.4):
 
     return chunks
 
+
 def write_to_db(row, conn):
     path = row.path
     file_name = os.path.basename(path)
@@ -90,25 +92,26 @@ def write_to_db(row, conn):
         "INSERT INTO documents (file_name, file_type, content) VALUES (%s, %s, %s) RETURNING id;",
         (file_name, file_type, text)
     ).fetchone()[0]
-    
+
     conn.execute(
-        "INSERT INTO metadata (document_id, file_path) VALUES (%s, %s) RETURNING id;", (document_id, path)
+        "INSERT INTO metadata (document_id, file_path) VALUES (%s, %s) RETURNING id;", (
+            document_id, path)
     )
 
     # COPY chunks
     with conn.cursor().copy("COPY chunks (document_id, chunk_text, chunk_vector) FROM STDIN") as copy:
         for chunk, embedding in zip(chunks, embeddings):
             copy.write_row((document_id, chunk, embedding))
-    
+
     conn.commit()
 
-    return document_id
 
 MODEL_SBERT_768 = 'sentence-transformers/all-mpnet-base-v2'
 MODEL_SBERT_384 = 'sentence-transformers/all-MiniLM-L6-v2'
 MODEL_SPACY = "en_core_web_sm"
 nlp = spacy.load(MODEL_SPACY)
 model = SentenceTransformer(MODEL_SBERT_384)
+
 
 def parse_file_map(path):
     try:
@@ -139,18 +142,10 @@ def encode_chunks_udf(documents: pd.Series) -> pd.Series:
     return pd.Series(embeddings)
 
 
-@pandas_udf(IntegerType())
-def write_to_db_udf(documents: pd.Series) -> pd.Series:
-    with psycopg.connect(conninfo) as conn:
-        ids = [write_to_db(document, conn) for document in documents]
-        return pd.Series(ids)
-
-PATH = "/Users/anassaeed/code/nlp/GenAI/SemanticSearch/src"
+# PATH = "/Users/anassaeed/code/nlp/GenAI/SemanticSearch/src"
+PATH = "/Users/anassaeed/Downloads/TEST"
 
 conf = SparkConf()
-# Set elasticsearch-hadoop jar
-# conf.set("spark.jars", "/Users/anassaeed/code/nlp/GenAI/SemanticSearch/data/elasticsearch-hadoop-8.10.0.jar")
-# conf.set("es.index.auto.create", "true")
 
 spark = SparkSession.builder \
     .config(conf=conf) \
@@ -162,21 +157,8 @@ sc = spark.sparkContext
 nlp_b = sc.broadcast(nlp)
 model_b = sc.broadcast(model)
 
-# es_conf = {
-#     "es.nodes": "localhost",
-#     "es.port": "9200",
-#     "es.net.http.auth.user": "elastic",
-#     "es.net.http.auth.pass": "changeme",
-# }
-
-# es_rdd = sc.newAPIHadoopRDD(
-#     inputFormatClass="org.elasticsearch.hadoop.mr.EsInputFormat",
-#     keyClass="org.apache.hadoop.io.NullWritable",
-#     valueClass="org.elasticsearch.hadoop.mr.LinkedMapWritable",
-#     conf=es_conf
-# )
-
 files = get_files(PATH)
+
 
 def pipeline(files):
     df = sc.parallelize(files)
@@ -189,15 +171,20 @@ def pipeline(files):
     # Then we need to encode the chunks
     df = df.withColumn("embeddings", encode_chunks_udf(df.chunks))
     # Then we need to write the data to the database
-    df = df.withColumn("document_id", write_to_db_udf(df))
+    # df = df.withColumn("document_id", write_to_db_udf(df.path, df.file_type, df.content, df.chunks, df.embeddings))
     return df
+
 
 df = pipeline(files)
 
+
+def write_to_db_map(rows):
+    with psycopg.connect(conninfo) as conn:
+        for row in rows:
+            write_to_db(row, conn)
+
+
+df.foreachPartition(write_to_db_map)
+
 df.show()
-# def index_elasticsearch_map(rows):
-
-# df.foreachPartition(index_elasticsearch_map)
-# df.foreachPartition(index_faiss_map)
-
 db.close()

@@ -151,3 +151,7 @@ dmypy.json
 cython_debug/
 data/
 .env
+
+FaissService/faiss.index
+FaissService/app.log
+FaissService/.env
