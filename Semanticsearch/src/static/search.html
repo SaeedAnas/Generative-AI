@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="searchApp">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hybrid Semantic Search</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <style>
+        .search-type {
+            cursor: pointer;
+            padding: 0 10px;
+        }
+
+        .selected {
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        .search-bar-container {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;  /* To provide some spacing between the search bar and the clickable text options */
+    }
+
+    .search-type {
+        cursor: pointer;
+        padding: 0 10px;
+        }
+
+        .selected {
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        button {
+            margin-left: 10px;
+        }
+    </style>
+    <script>
+        angular.module("searchApp", [])
+            .controller("SearchController", ['$scope', '$http', function ($scope, $http) {
+                $scope.searchResults = [];
+                $scope.search_type = 'text'; // default search type
+
+                $scope.performSearch = function () {
+                    $http.post("/search", { query: $scope.query, top_k: 10, rerank_k: 5, search_type: $scope.search_type })
+                        .then(function (response) {
+                            $scope.searchResults = response.data.result;
+                        });
+                };
+            }]);
+    </script>
+</head>
+
+<body ng-controller="SearchController">
+    <h1>Hybrid Search</h1>
+
+   
+    <div class="search-bar-container">
+        <label for="searchBox">Enter your search:</label>
+        <input type="text" id="searchBox" ng-model="query">
+        <button ng-click="performSearch()">Search</button>
+    </div>
+
+    <div>
+        <span class="search-type" ng-class="{'selected': search_type === 'text'}" ng-click="search_type = 'text'">Text</span>
+        <span class="search-type" ng-class="{'selected': search_type === 'image'}" ng-click="search_type = 'image'">Image</span>
+        <span class="search-type" ng-class="{'selected': search_type === 'audio'}" ng-click="search_type = 'audio'">Audio</span>
+        <span class="search-type" ng-class="{'selected': search_type === 'video'}" ng-click="search_type = 'video'">Video</span>
+    </div>
+    
+    <div ng-repeat="result in searchResults">
+        <p><strong>Text:</strong> {{ result.text }}</p>
+        <p><strong>Score:</strong> {{ result.score }}</p>
+        <hr>
+    </div>
+
+    <footer>
+        Hybrid Semantic Search - Powered by FastAPI, Elasticsearch, FAISS, and AngularJS.
+    </footer>
+</body>
+
+</html>
