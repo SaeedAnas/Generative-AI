@@ -7,6 +7,7 @@ from sentence_transformers import SentenceTransformer
 from psycopg2 import pool
 from tenacity import retry, wait_fixed, stop_after_attempt
 import logging
+import regex as re
 
 # Constants and Global Variables
 MODEL_SBERT = os.environ['MODEL_SBERT'] 
@@ -18,15 +19,16 @@ DB_NAME = os.environ['DB_NAME']
 DB_USER = os.environ['DB_USER']
 DB_PASSWORD = os.environ['DB_PASSWORD']
 
+#nlp = spacy.load(MODEL_SPACY, disable=["ner","tok2vec", "tagger", "parser", "attribute_ruler", "lemmatizer"])
 nlp = spacy.load(MODEL_SPACY)
 config = {"punct_chars": [".", "?", "!", "。","    "]}
 sentencizer = nlp.add_pipe("sentencizer", config=config)
 
-#nlp = spacy.load(MODEL_SPACY, disable=["ner","tok2vec", "tagger", "parser", "attribute_ruler", "lemmatizer"])
-nlp.max_length = 5000011
+#nlp.max_length = 5000011
 #print(nlp.pipe_names)
 
 model = SentenceTransformer(MODEL_SBERT)
+model_spacy = 'sentence-transformers/all-MiniLM-L6-v2'
 
 # Logger setup
 logging.info("Initialization...")
@@ -39,15 +41,12 @@ Retry Logic: For getting a database connection, better to keep this here
 If a connection fails, it will retry for 3 times, waiting 3 seconds between each attempt.
 """
 
-
 @retry(wait=wait_fixed(3), stop=stop_after_attempt(3))
 def get_connection():
     return db_pool.getconn()
 
-
 def release_connection(conn):
     db_pool.putconn(conn)
-
 
 def initialize_pool():
     global db_pool
@@ -58,12 +57,20 @@ def initialize_pool():
     else:
         logging.error("Failed to establish database pool.")
         raise Exception("Failed to establish database pool.")
+
+
 def clean_text(text):
     doc = nlp(text)
-    tokens = [token.text for token in doc if not token.is_punct]
-    return ' '.join(tokens)
+    cleaned_text = [
+        re.sub('\s+|\n+', ' ', sentence.text).strip()
+        for sentence in doc.sents
+        if len(sentence.text.strip()) > 0
+    ]
+    return ' '.join(cleaned_text)
+
 
 def chunk_text(text, threshold=0.2):
+    #clean text
     doc = nlp(text)
     sentences = [sent.text for sent in doc.sents]
 
@@ -89,6 +96,7 @@ def chunk_text(text, threshold=0.2):
     if current_chunk:
         chunks.append(' '.join(current_chunk))
 
+    #print(f'chunks:  {chunks}')
     return chunks
 
 def split_large_text(text, max_length=1000000):
