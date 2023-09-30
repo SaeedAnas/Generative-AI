@@ -28,7 +28,7 @@ es = Elasticsearch(
 # FAISS and Transformer setup
 DIMENSION = 768 #os.environ['DIMENSIONS']
 try:
-    faiss_index = faiss.read_index('faiss_index.index')
+    faiss_index = faiss.read_index('/Users/praveen/dev/project-SV/Assignment1/github/Generative-AI/Semanticsearch/src/faiss_index.index')
     logger.info(f"Number of vectors in FAISS index: {faiss_index.ntotal}")
 except Exception as e:
     logger.error(f"Error reading FAISS index: {e}")
@@ -87,9 +87,11 @@ def search(query, top_k=10, rerank_k=5,search_type='text'):
     try:
         pairs = [(query, hit) for hit in combined_hits]
         scores = cross_encoder.predict(pairs)
-
+        normalized_scores = normalize_scores(scores)
+        
         # Sort by scores and select top rerank_k results
-        sorted_results = sorted(zip(combined_hits, scores), key=lambda x: x[1], reverse=True)[:rerank_k]
+        sorted_results = sorted(zip(combined_hits, normalized_scores), key=lambda x: x[1], reverse=True)[:rerank_k]
+        #sorted_results = sorted(zip(combined_hits, scores), key=lambda x: x[1], reverse=True)[:rerank_k]
       
         logger.info(f"Found {len(sorted_results)} relevant results for query: {query}")
 
@@ -109,12 +111,19 @@ def search(query, top_k=10, rerank_k=5,search_type='text'):
             #print(f"Results: {results}")
             #return results
 
-
-
     except Exception as e:
         logger.error(f"Error during re-ranking: {e}")
         return []
 
+def normalize_scores(scores):
+    min_score = min(scores)
+    max_score = max(scores)
+
+    # Avoiding division by zero if all scores are the same
+    if min_score == max_score:
+        return [0.5 for _ in scores]  # Or another default value, since all scores are the same
+    
+    return [(score - min_score) / (max_score - min_score) for score in scores]
 
 
 if __name__ == "__main__":
