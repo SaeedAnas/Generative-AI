@@ -63,20 +63,12 @@ class TextChunkingService:
 
     @app.get("/chunk")
     async def chunk(self, text: Text) -> Chunks:
-        start_all = time.time()
-        start = time.time()
         sentences = await self.sentencize(text.text)
-        print('Sentencize', time.time() - start)
-        start = time.time()
         embeddings = await asyncio.gather(*[self.embed_sentences(sentence)
                                             for sentence in sentences])
-        print('Embed', time.time() - start)
-        start = time.time()
         embeddings = np.stack(embeddings)
         split_points = util.get_split_points(embeddings)
         chunks = util.get_chunks(sentences, split_points)
-        print('Split', time.time() - start)
-        print('Time elapsed: ', time.time() - start_all)
         return Chunks(chunks=chunks)
 
 
