@@ -10,7 +10,6 @@ SCHEMA = {
         id SERIAL PRIMARY KEY,
         file_name TEXT NOT NULL,
         file_type TEXT NOT NULL,
-        content TEXT NOT NULL
     );
     """,
     "metadata": """
@@ -26,7 +25,7 @@ SCHEMA = {
     CREATE TABLE chunks (
         id SERIAL PRIMARY KEY,
         document_id INTEGER NOT NULL,
-        chunk_text TEXT NOT NULL,
+        chunk_text TEXT, 
         chunk_vector FLOAT8[] NOT NULL,
         FOREIGN KEY (document_id) REFERENCES documents(id)
     );

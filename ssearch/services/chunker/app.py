@@ -56,7 +56,6 @@ class TextChunkingService:
 
     @serve.batch(max_batch_size=800, batch_wait_timeout_s=0.1)
     async def embed_sentences(self, sentences: List[str]) -> List[np.ndarray]:
-        print(len(sentences))
         embeddings = self.model.encode(
             sentences, batch_size=16, convert_to_numpy=True)
         return embeddings

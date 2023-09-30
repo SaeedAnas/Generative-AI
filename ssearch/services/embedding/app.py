@@ -20,6 +20,10 @@ class Request(BaseModel):
     data: str
 
 
+class Embedding(BaseModel):
+    vector: list[float]
+
+
 def validate_path(path: str) -> bool:
     return os.path.exists(path)
 
@@ -73,25 +77,25 @@ class ImageBindEmbedding:
         return outputs
 
     @app.get("/text")
-    async def embed_text(self, text: Request) -> list[float]:
+    async def embed_text(self, text: Request) -> Embedding:
         modality, embedding = await self.embed((ModalityType.TEXT, text.data))
-        return embedding.tolist()
+        return Embedding(vector=embedding.tolist())
 
     @app.get("/image")
-    async def embed_image(self, path: Request) -> list[float]:
-        if not self.check_path(path.data):
+    async def embed_image(self, path: Request) -> Embedding:
+        if not validate_path(path.data):
             return HTTPException(status_code=404, detail="File not found")
 
         modality, embedding = await self.embed((ModalityType.VISION, path.data))
-        return embedding.tolist()
+        return Embedding(vector=embedding.tolist())
 
     @app.get("/audio")
-    async def embed_audio(self, path: Request) -> list[float]:
-        if not self.check_path(path.data):
+    async def embed_audio(self, path: Request) -> Embedding:
+        if not validate_path(path.data):
             return HTTPException(status_code=404, detail="File not found")
 
         modality, embedding = await self.embed((ModalityType.AUDIO, path.data))
-        return embedding.tolist()
+        return Embedding(vector=embedding.tolist())
 
 
 serve_app = ImageBindEmbedding.bind()
