@@ -56,13 +56,13 @@ def remove_punctuation(text):
 
 def extract_sentences(text):
     # sentences = [remove_punctuation_and_stopwords(sent) for sent in text.sents]
-    sentences = [remove_punctuation_and_stopwords(sent) for sent in text.sents]
+    sentences = [remove_punctuation(sent) for sent in text.sents]
     vectors = np.stack([sent.vector / sent.vector_norm for sent in text.sents])
 
     return sentences, vectors
 
 
-def chunk_text_spacy(sentences, vectors, threshold=0.7):
+def chunk_text_spacy(sentences, vectors, threshold=0.5):
     chunks = []
     current_chunk = []
 
@@ -150,6 +150,8 @@ spark = SparkSession.builder \
     .getOrCreate()
 sc = spark.sparkContext
 
+nlp.max_length = 1500000
+
 nlp_b = sc.broadcast(nlp)
 model_b = sc.broadcast(model)
 
@@ -184,5 +186,5 @@ def write_to_db_map(rows):
 
 df.foreachPartition(write_to_db_map)
 
-df.show()
+# df.show()
 db.close()

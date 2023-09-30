@@ -76,7 +76,10 @@
             ng-click="search_type = 'video'">Video</span>
     </div>
 
-    <div ng-repeat="result in searchResults">
+    <!-- we return result.time, which is the time taken to perform the search -->
+    <p ng-if="searchResults.results.length > 0">Search took {{ searchResults.time }} seconds.</p>
+
+    <div ng-repeat="result in searchResults.results">
         <p><strong>Id:</strong> {{ result.id }}</p>
         <p><strong>Document_id:</strong> {{ result.document_id }} </p>
         <p><strong>Text:</strong> {{ result.chunk_text }}</p>

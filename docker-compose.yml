@@ -17,7 +17,6 @@ volumes:
     driver: local
   
 
-
 networks:
  default:
    name: elastic
@@ -38,18 +37,6 @@ services:
       - "-c"
       - "wal_level=logical"
 
-    
-  # postgres:
-  #   image: quay.io/debezium/postgres:9.6
-  #   ports:
-  #    - 5432:5432
-  #   environment:
-  #    - POSTGRES_USER=${POSTGRES_USER}
-  #    - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-  #    - POSTGRES_DB=${POSTGRES_DB}
-  #   volumes:
-  #     - postgres_data:/var/lib/postgresql/data
-
   adminer:
     image: adminer
     restart: always
@@ -62,62 +49,6 @@ services:
     ports:
       - 9998:9998
 
-  # setup:
-  #   image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
-  #   volumes:
-  #     - certs:/usr/share/elasticsearch/config/certs
-  #   user: "0"
-  #   command: >
-  #     bash -c '
-  #      if [ x${ELASTIC_PASSWORD} == x ]; then
-  #        echo "Set the ELASTIC_PASSWORD environment variable in the .env file";
-  #        exit 1;
-  #      elif [ x${KIBANA_PASSWORD} == x ]; then
-  #        echo "Set the KIBANA_PASSWORD environment variable in the .env file";
-  #        exit 1;
-  #      fi;
-  #      if [ ! -f config/certs/ca.zip ]; then
-  #        echo "Creating CA";
-  #        bin/elasticsearch-certutil ca --silent --pem -out config/certs/ca.zip;
-  #        unzip config/certs/ca.zip -d config/certs;
-  #      fi;
-  #      if [ ! -f config/certs/certs.zip ]; then
-  #        echo "Creating certs";
-  #        echo -ne \
-  #        "instances:\n"\
-  #        "  - name: es01\n"\
-  #        "    dns:\n"\
-  #        "      - es01\n"\
-  #        "      - localhost\n"\
-  #        "    ip:\n"\
-  #        "      - 127.0.0.1\n"\
-  #        "  - name: kibana\n"\
-  #        "    dns:\n"\
-  #        "      - kibana\n"\
-  #        "      - localhost\n"\
-  #        "    ip:\n"\
-  #        "      - 127.0.0.1\n"\
-  #        > config/certs/instances.yml;
-  #        bin/elasticsearch-certutil cert --silent --pem -out config/certs/certs.zip --in config/certs/instances.yml --ca-cert config/certs/ca/ca.crt --ca-key config/certs/ca/ca.key;
-  #        unzip config/certs/certs.zip -d config/certs;
-  #      fi;
-  #      echo "Setting file permissions"
-  #     #  chown -R root:root config/certs;
-  #      chown -R 1000:1000 config/certs;
-  #      chmod -R 755 config/certs;
-  #      find . -type d -exec chmod 750 \{\} \;;
-  #      find . -type f -exec chmod 640 \{\} \;;
-  #      echo "Waiting for Elasticsearch availability";
-  #      until curl -s --cacert config/certs/ca/ca.crt https://es01:9200 | grep -q "missing authentication credentials"; do sleep 30; done;
-  #      echo "Setting kibana_system password";
-  #      until curl -s -X POST --cacert config/certs/ca/ca.crt -u "elastic:${ELASTIC_PASSWORD}" -H "Content-Type: application/json" https://es01:9200/_security/user/kibana_system/_password -d "{\"password\":\"${KIBANA_PASSWORD}\"}" | grep -q "^{}"; do sleep 10; done;
-  #      echo "All done!";
-  #     '
-  #   healthcheck:
-  #     test: ["CMD-SHELL", "[ -f config/certs/es01/es01.crt ]"]
-  #     interval: 1s
-  #     timeout: 5s
-  #     retries: 120
         
   es01:
     # depends_on:
@@ -221,44 +152,16 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_JMX_PORT: 9991
-      # Use PROTOBUF Converter
-      # KAFKA_KEY_CONVERTER: io.confluent.connect.protobuf.ProtobufConverter
-      # KAFKA_VALUE_CONVERTER: io.confluent.connect.protobuf.ProtobufConverter
-      # KAFKA_KEY_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8085
-      # KAFKA_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8085
       
     ports:
       - 9092:9092
       - 29092:29092
     volumes:
       - kafka_data:/var/lib/kafka/data
-        
-  # schema-registry:
-  #   image: confluentinc/cp-schema-registry:5.5.3
-  #   environment:
-  #     - SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL=zookeeper:2181
-  #     - SCHEMA_REGISTRY_HOST_NAME=schema-registry
-  #     - SCHEMA_REGISTRY_LISTENERS=http://schema-registry:8085,http://localhost:8085
-  #   ports:
-  #     - 8085:8085
-  #   depends_on: [zookeeper, kafka]
-
-
-  # kafka:
-  #   image: quay.io/debezium/kafka:${DEBEZIUM_VERSION}
-  #   ports:
-  #    - 9092:9092
-  #    - 29092:29092
-  #   links:
-  #    - zookeeper
-  #   environment:
-  #     ZOOKEEPER_CONNECT: zookeeper:2181
-  #     KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-  #     KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
 
   debezium:
     build:
-      context: debezium-jdbc-es
+      context: Docker/debezium
       args:
         DEBEZIUM_VERSION: ${DEBEZIUM_VERSION}
     volumes:
@@ -277,3 +180,100 @@ services:
      - CONFIG_STORAGE_TOPIC=my_connect_configs
      - OFFSET_STORAGE_TOPIC=my_connect_offsets
      - STATUS_STORAGE_TOPIC=my_source_connect_statuses
+
+    
+  # postgres:
+  #   image: quay.io/debezium/postgres:9.6
+  #   ports:
+  #    - 5432:5432
+  #   environment:
+  #    - POSTGRES_USER=${POSTGRES_USER}
+  #    - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+  #    - POSTGRES_DB=${POSTGRES_DB}
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+
+  # setup:
+  #   image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
+  #   volumes:
+  #     - certs:/usr/share/elasticsearch/config/certs
+  #   user: "0"
+  #   command: >
+  #     bash -c '
+  #      if [ x${ELASTIC_PASSWORD} == x ]; then
+  #        echo "Set the ELASTIC_PASSWORD environment variable in the .env file";
+  #        exit 1;
+  #      elif [ x${KIBANA_PASSWORD} == x ]; then
+  #        echo "Set the KIBANA_PASSWORD environment variable in the .env file";
+  #        exit 1;
+  #      fi;
+  #      if [ ! -f config/certs/ca.zip ]; then
+  #        echo "Creating CA";
+  #        bin/elasticsearch-certutil ca --silent --pem -out config/certs/ca.zip;
+  #        unzip config/certs/ca.zip -d config/certs;
+  #      fi;
+  #      if [ ! -f config/certs/certs.zip ]; then
+  #        echo "Creating certs";
+  #        echo -ne \
+  #        "instances:\n"\
+  #        "  - name: es01\n"\
+  #        "    dns:\n"\
+  #        "      - es01\n"\
+  #        "      - localhost\n"\
+  #        "    ip:\n"\
+  #        "      - 127.0.0.1\n"\
+  #        "  - name: kibana\n"\
+  #        "    dns:\n"\
+  #        "      - kibana\n"\
+  #        "      - localhost\n"\
+  #        "    ip:\n"\
+  #        "      - 127.0.0.1\n"\
+  #        > config/certs/instances.yml;
+  #        bin/elasticsearch-certutil cert --silent --pem -out config/certs/certs.zip --in config/certs/instances.yml --ca-cert config/certs/ca/ca.crt --ca-key config/certs/ca/ca.key;
+  #        unzip config/certs/certs.zip -d config/certs;
+  #      fi;
+  #      echo "Setting file permissions"
+  #     #  chown -R root:root config/certs;
+  #      chown -R 1000:1000 config/certs;
+  #      chmod -R 755 config/certs;
+  #      find . -type d -exec chmod 750 \{\} \;;
+  #      find . -type f -exec chmod 640 \{\} \;;
+  #      echo "Waiting for Elasticsearch availability";
+  #      until curl -s --cacert config/certs/ca/ca.crt https://es01:9200 | grep -q "missing authentication credentials"; do sleep 30; done;
+  #      echo "Setting kibana_system password";
+  #      until curl -s -X POST --cacert config/certs/ca/ca.crt -u "elastic:${ELASTIC_PASSWORD}" -H "Content-Type: application/json" https://es01:9200/_security/user/kibana_system/_password -d "{\"password\":\"${KIBANA_PASSWORD}\"}" | grep -q "^{}"; do sleep 10; done;
+  #      echo "All done!";
+  #     '
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "[ -f config/certs/es01/es01.crt ]"]
+  #     interval: 1s
+  #     timeout: 5s
+  #     retries: 120
+        
+  # schema-registry:
+  #   image: confluentinc/cp-schema-registry:5.5.3
+  #   environment:
+  #     - SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL=zookeeper:2181
+  #     - SCHEMA_REGISTRY_HOST_NAME=schema-registry
+  #     - SCHEMA_REGISTRY_LISTENERS=http://schema-registry:8085,http://localhost:8085
+      # Use PROTOBUF Converter
+      # KAFKA_KEY_CONVERTER: io.confluent.connect.protobuf.ProtobufConverter
+      # KAFKA_VALUE_CONVERTER: io.confluent.connect.protobuf.ProtobufConverter
+      # KAFKA_KEY_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8085
+      # KAFKA_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8085
+  #   ports:
+  #     - 8085:8085
+  #   depends_on: [zookeeper, kafka]
+
+
+  # kafka:
+  #   image: quay.io/debezium/kafka:${DEBEZIUM_VERSION}
+  #   ports:
+  #    - 9092:9092
+  #    - 29092:29092
+  #   links:
+  #    - zookeeper
+  #   environment:
+  #     ZOOKEEPER_CONNECT: zookeeper:2181
+  #     KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+  #     KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
