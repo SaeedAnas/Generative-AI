@@ -102,11 +102,12 @@ Ray:
 python svlearn/service/rest/rayserve/faiss_search_service.py
 python svlearn/service/rest/rayserve/query_results_reranking_service.py
 
-Finally Search: python svlearn/service/rest/fastapi/search_fastapi_service.py
+Finally Search: python svlearn/service/rest/fastapi/search_app.py
 Json output in browser, http://localhost:8006/search?query=spark&k=5
 
 UI: Angular
 Install nodejs
+npm install
 >ng serve
 localhost:4200 
 
