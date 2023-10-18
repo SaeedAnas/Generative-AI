@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>svlearn.compute package &mdash; LLM-Bootcamp 1.0.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=8d563738"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="svlearn.config package" href="svlearn.config.html" />
+    <link rel="prev" title="svlearn.common package" href="svlearn.common.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            LLM-Bootcamp
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="svlearn.html">svlearn package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="svlearn.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="svlearn.common.html">svlearn.common package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">svlearn.compute package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-svlearn.compute.ann_indexer_job">svlearn.compute.ann_indexer_job module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-svlearn.compute.bootcamp_compute_job">svlearn.compute.bootcamp_compute_job module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-svlearn.compute.chunk_vectorizer">svlearn.compute.chunk_vectorizer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-svlearn.compute.chunker_job">svlearn.compute.chunker_job module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-svlearn.compute.compute_utils">svlearn.compute.compute_utils module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-svlearn.compute.es_indexer_job">svlearn.compute.es_indexer_job module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-svlearn.compute.text_extraction_job">svlearn.compute.text_extraction_job module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-svlearn.compute">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.config.html">svlearn.config package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.sql.html">svlearn.sql package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.text.html">svlearn.text package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.service.rest.rayserve.html">svlearn.service.rest.rayserve package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.service.rest.fastapi.html">svlearn.service.rest.fastapi package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.html#module-svlearn">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="demo.html">import required modules.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo.html#provide-filepath">provide filepath</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo.html#To-get-raw-content-of-input-file">To get raw-content of input file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo.html#To-get-chunked-sentences">To get chunked sentences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo.html#To-get-input-file-type">To get input-file type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo.html#To-get-language-of-input-document-content.">To get language of input-document content.</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Content:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="elastic-search-notes.html">ElasticSearch installation notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elastic-search-notes.html#Python-ES-installation">Python ES installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elastic-search-notes.html#Sample-python-code">Sample python code</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">LLM-Bootcamp</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="svlearn.html">svlearn package</a></li>
+      <li class="breadcrumb-item active">svlearn.compute package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/svlearn.compute.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="svlearn-compute-package">
+<h1>svlearn.compute package<a class="headerlink" href="#svlearn-compute-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-svlearn.compute.ann_indexer_job">
+<span id="svlearn-compute-ann-indexer-job-module"></span><h2>svlearn.compute.ann_indexer_job module<a class="headerlink" href="#module-svlearn.compute.ann_indexer_job" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="svlearn.compute.ann_indexer_job.ANNIndexerJob">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">svlearn.compute.ann_indexer_job.</span></span><span class="sig-name descname"><span class="pre">ANNIndexerJob</span></span><a class="reference internal" href="_modules/svlearn/compute/ann_indexer_job.html#ANNIndexerJob"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.compute.ann_indexer_job.ANNIndexerJob" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#svlearn.compute.bootcamp_compute_job.BootcampComputeJob" title="svlearn.compute.bootcamp_compute_job.BootcampComputeJob"><code class="xref py py-class docutils literal notranslate"><span class="pre">BootcampComputeJob</span></code></a></p>
+<p>This class is the entry point for the ANN Indexer job.
+Given the table of un-indexed vectors,
+it will send the documents to ANN index for indexing.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="svlearn.compute.ann_indexer_job.ANNIndexerJob.describe">
+<span class="sig-name descname"><span class="pre">describe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/svlearn/compute/ann_indexer_job.html#ANNIndexerJob.describe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.compute.ann_indexer_job.ANNIndexerJob.describe" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svlearn.compute.ann_indexer_job.ANNIndexerJob.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/svlearn/compute/ann_indexer_job.html#ANNIndexerJob.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.compute.ann_indexer_job.ANNIndexerJob.run" title="Link to this definition"></a></dt>
+<dd><p>This method is the entry point for the compute job where
+the vectors are retrieved from CHUNK table, un-ann-indexed vectors are sent to ANN index.
+Also update ANN_INDEXED column to True for all rows of CHUNK table at the end.
+:return: None</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="svlearn.compute.ann_indexer_job.call_faiss_indexer_endpoint">
+<span class="sig-prename descclassname"><span class="pre">svlearn.compute.ann_indexer_job.</span></span><span class="sig-name descname"><span class="pre">call_faiss_indexer_endpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ann_index_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_vectors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/svlearn/compute/ann_indexer_job.html#call_faiss_indexer_endpoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.compute.ann_indexer_job.call_faiss_indexer_endpoint" title="Link to this definition"></a></dt>
+<dd><p>Calls the REST endpoint taking a POST request with a vector
+input that calls ANN indexer service.</p>
+<p>:param : param ann_index_url: the URL of the ANN indexer service
+:param : param input_vectors: the list of vectors to be indexed</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="svlearn.compute.ann_indexer_job.index_per_partition">
+<span class="sig-prename descclassname"><span class="pre">svlearn.compute.ann_indexer_job.</span></span><span class="sig-name descname"><span class="pre">index_per_partition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">records</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/svlearn/compute/ann_indexer_job.html#index_per_partition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.compute.ann_indexer_job.index_per_partition" title="Link to this definition"></a></dt>
+<dd><p>This method is called for each partition of the incoming dataframe. Each record
+represents a document chunk, and its vector is sent to the ANN indexer service.
+:param records: the rows in the partition, each representing a document chunk and its vector.</p>
+</dd></dl>
+
+</section>
+<section id="module-svlearn.compute.bootcamp_compute_job">
+<span id="svlearn-compute-bootcamp-compute-job-module"></span><h2>svlearn.compute.bootcamp_compute_job module<a class="headerlink" href="#module-svlearn.compute.bootcamp_compute_job" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="svlearn.compute.bootcamp_compute_job.BootcampComputeJob">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">svlearn.compute.bootcamp_compute_job.</span></span><span class="sig-name descname"><span class="pre">BootcampComputeJob</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">job_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/svlearn/compute/bootcamp_compute_job.html#BootcampComputeJob"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.compute.bootcamp_compute_job.BootcampComputeJob" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code>, <a class="reference internal" href="svlearn.config.html#svlearn.config.configuration.ConfigurationMixin" title="svlearn.config.configuration.ConfigurationMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigurationMixin</span></code></a></p>
+<p>Base class for all py-spark compute jobs.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="svlearn.compute.bootcamp_compute_job.BootcampComputeJob.describe">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">describe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/svlearn/compute/bootcamp_compute_job.html#BootcampComputeJob.describe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.compute.bootcamp_compute_job.BootcampComputeJob.describe" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svlearn.compute.bootcamp_compute_job.BootcampComputeJob.run">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/svlearn/compute/bootcamp_compute_job.html#BootcampComputeJob.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.compute.bootcamp_compute_job.BootcampComputeJob.run" title="Link to this definition"></a></dt>
+<dd><p>This method is the entry point for the compute job.
+It is an abstract method in this base clas, for each of the compute jobs
+to implement.
+:return:   None</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-svlearn.compute.chunk_vectorizer">
+<span id="svlearn-compute-chunk-vectorizer-module"></span><h2>svlearn.compute.chunk_vectorizer module<a class="headerlink" href="#module-svlearn.compute.chunk_vectorizer" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="svlearn.compute.chunk_vectorizer.ChunkVectorizerJob">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">svlearn.compute.chunk_vectorizer.</span></span><span class="sig-name descname"><span class="pre">ChunkVectorizerJob</span></span><a class="reference internal" href="_modules/svlearn/compute/chunk_vectorizer.html#ChunkVectorizerJob"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.compute.chunk_vectorizer.ChunkVectorizerJob" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#svlearn.compute.bootcamp_compute_job.BootcampComputeJob" title="svlearn.compute.bootcamp_compute_job.BootcampComputeJob"><code class="xref py py-class docutils literal notranslate"><span class="pre">BootcampComputeJob</span></code></a></p>
+<p>This class is the entry point for the chunk vectorizer job.
+Given the table of chunked documents,
+it vectorizes each of them and persists into another table in the db.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="svlearn.compute.chunk_vectorizer.ChunkVectorizerJob.describe">
+<span class="sig-name descname"><span class="pre">describe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/svlearn/compute/chunk_vectorizer.html#ChunkVectorizerJob.describe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.compute.chunk_vectorizer.ChunkVectorizerJob.describe" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svlearn.compute.chunk_vectorizer.ChunkVectorizerJob.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/svlearn/compute/chunk_vectorizer.html#ChunkVectorizerJob.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.compute.chunk_vectorizer.ChunkVectorizerJob.run" title="Link to this definition"></a></dt>
+<dd><p>This method is the entry point for the compute job where
+the documents are retrieved from CHUNK table, un-vectorized text is vectorized,
+and the vectorized documents stored back in the CHUNK table.  Also update
+VECTORIZED column to True for all rows of CHUNK table at the end.
+:return: None</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="svlearn.compute.chunk_vectorizer.call_embedding_endpoint">
+<span class="sig-prename descclassname"><span class="pre">svlearn.compute.chunk_vectorizer.</span></span><span class="sig-name descname"><span class="pre">call_embedding_endpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sentence_vectorizer_url:</span> <span class="pre">str,</span> <span class="pre">text_input:</span> <span class="pre">[&lt;class</span> <span class="pre">'str'&gt;]</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/svlearn/compute/chunk_vectorizer.html#call_embedding_endpoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.compute.chunk_vectorizer.call_embedding_endpoint" title="Link to this definition"></a></dt>
+<dd><p>Calls the REST endpoint taking a POST request with a text input that returns the sentence embedding.</p>
+<p>:param : param sentence_vectorizer_url:
+:param : param text_input:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A vector embedding of the input text.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="svlearn.compute.chunk_vectorizer.persist_vectors">
+<span class="sig-prename descclassname"><span class="pre">svlearn.compute.chunk_vectorizer.</span></span><span class="sig-name descname"><span class="pre">persist_vectors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rows</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/svlearn/compute/chunk_vectorizer.html#persist_vectors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.compute.chunk_vectorizer.persist_vectors" title="Link to this definition"></a></dt>
+<dd><p>This method is called for each partition of the incoming dataframe, to
+persist the embedding vectors associated with each chunk into the database.</p>
+</dd></dl>
+
+</section>
+<section id="module-svlearn.compute.chunker_job">
+<span id="svlearn-compute-chunker-job-module"></span><h2>svlearn.compute.chunker_job module<a class="headerlink" href="#module-svlearn.compute.chunker_job" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="svlearn.compute.chunker_job.TextChunkerJob">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">svlearn.compute.chunker_job.</span></span><span class="sig-name descname"><span class="pre">TextChunkerJob</span></span><a class="reference internal" href="_modules/svlearn/compute/chunker_job.html#TextChunkerJob"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.compute.chunker_job.TextChunkerJob" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#svlearn.compute.bootcamp_compute_job.BootcampComputeJob" title="svlearn.compute.bootcamp_compute_job.BootcampComputeJob"><code class="xref py py-class docutils literal notranslate"><span class="pre">BootcampComputeJob</span></code></a></p>
+<p>This class is the entry point for the text chunker job.
+Given the table of unchunked documents,
+it chunks each of them and persists into another table in the db.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="svlearn.compute.chunker_job.TextChunkerJob.describe">
+<span class="sig-name descname"><span class="pre">describe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/svlearn/compute/chunker_job.html#TextChunkerJob.describe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.compute.chunker_job.TextChunkerJob.describe" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svlearn.compute.chunker_job.TextChunkerJob.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/svlearn/compute/chunker_job.html#TextChunkerJob.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.compute.chunker_job.TextChunkerJob.run" title="Link to this definition"></a></dt>
+<dd><p>This method is the entry point for the compute job where
+the documents are retrieved from DOCUMENT table, unchunked text is chunked,
+and the chunked documents stored in CHUNK table.  Also update
+CHUNKED column to True for all rows of DOCUMENT table at the end.
+:return: None</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="svlearn.compute.chunker_job.call_chunker_endpoint">
+<span class="sig-prename descclassname"><span class="pre">svlearn.compute.chunker_job.</span></span><span class="sig-name descname"><span class="pre">call_chunker_endpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">clean_chunk_url:</span> <span class="pre">str,</span> <span class="pre">text_input:</span> <span class="pre">[&lt;class</span> <span class="pre">'str'&gt;]</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">[[&lt;class</span> <span class="pre">'str'&gt;]]</span></span></span><a class="reference internal" href="_modules/svlearn/compute/chunker_job.html#call_chunker_endpoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.compute.chunker_job.call_chunker_endpoint" title="Link to this definition"></a></dt>
+<dd><p>Calls the REST endpoint taking a POST request with a list of text input that returns list of
+cleaned list of text chunks.</p>
+<p>:param : param clean_chunk_url:
+:param : param text_input:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A List of text output from the REST endpoint.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="svlearn.compute.chunker_job.persist_chunks">
+<span class="sig-prename descclassname"><span class="pre">svlearn.compute.chunker_job.</span></span><span class="sig-name descname"><span class="pre">persist_chunks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rows</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/svlearn/compute/chunker_job.html#persist_chunks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.compute.chunker_job.persist_chunks" title="Link to this definition"></a></dt>
+<dd><p>This method is called for each partition of the incoming dataframe, to
+persist the chunked text into the database.
+:param rows: the rows in the partition, each representing a document chunk.</p>
+</dd></dl>
+
+</section>
+<section id="module-svlearn.compute.compute_utils">
+<span id="svlearn-compute-compute-utils-module"></span><h2>svlearn.compute.compute_utils module<a class="headerlink" href="#module-svlearn.compute.compute_utils" title="Link to this heading"></a></h2>
+</section>
+<section id="module-svlearn.compute.es_indexer_job">
+<span id="svlearn-compute-es-indexer-job-module"></span><h2>svlearn.compute.es_indexer_job module<a class="headerlink" href="#module-svlearn.compute.es_indexer_job" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="svlearn.compute.es_indexer_job.ESIndexerJob">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">svlearn.compute.es_indexer_job.</span></span><span class="sig-name descname"><span class="pre">ESIndexerJob</span></span><a class="reference internal" href="_modules/svlearn/compute/es_indexer_job.html#ESIndexerJob"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.compute.es_indexer_job.ESIndexerJob" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#svlearn.compute.bootcamp_compute_job.BootcampComputeJob" title="svlearn.compute.bootcamp_compute_job.BootcampComputeJob"><code class="xref py py-class docutils literal notranslate"><span class="pre">BootcampComputeJob</span></code></a></p>
+<p>This class is the entry point for the ES Indexer job.
+Given the table of un-indexed documents,
+it will send the documents to ES for indexing.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="svlearn.compute.es_indexer_job.ESIndexerJob.describe">
+<span class="sig-name descname"><span class="pre">describe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/svlearn/compute/es_indexer_job.html#ESIndexerJob.describe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.compute.es_indexer_job.ESIndexerJob.describe" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svlearn.compute.es_indexer_job.ESIndexerJob.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/svlearn/compute/es_indexer_job.html#ESIndexerJob.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.compute.es_indexer_job.ESIndexerJob.run" title="Link to this definition"></a></dt>
+<dd><p>This method is the entry point for the compute job where
+the documents are retrieved from DOCUMENT table, un-es-indexed text is sent to ES index.
+Also update ES_INDEXED column to True for all rows of DOCUMENT table at the end.
+:return: None</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="svlearn.compute.es_indexer_job.call_rest_partition">
+<span class="sig-prename descclassname"><span class="pre">svlearn.compute.es_indexer_job.</span></span><span class="sig-name descname"><span class="pre">call_rest_partition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">records</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/svlearn/compute/es_indexer_job.html#call_rest_partition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.compute.es_indexer_job.call_rest_partition" title="Link to this definition"></a></dt>
+<dd><p>This method is called for each partition of the incoming dataframe.
+For each partition, it does the following:</p>
+<ol class="arabic simple">
+<li><p>Create a connection to the ElasticSearch instance.</p></li>
+<li><dl class="simple">
+<dt>For each row in the partition, it calls the ElasticSearch REST endpoint</dt><dd><p>to index the text.</p>
+</dd>
+</dl>
+</li>
+<li><p>Update the DOCUMENT table to set the ES_INDEXED column to True.</p></li>
+</ol>
+</dd></dl>
+
+</section>
+<section id="module-svlearn.compute.text_extraction_job">
+<span id="svlearn-compute-text-extraction-job-module"></span><h2>svlearn.compute.text_extraction_job module<a class="headerlink" href="#module-svlearn.compute.text_extraction_job" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="svlearn.compute.text_extraction_job.TextExtractionJob">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">svlearn.compute.text_extraction_job.</span></span><span class="sig-name descname"><span class="pre">TextExtractionJob</span></span><a class="reference internal" href="_modules/svlearn/compute/text_extraction_job.html#TextExtractionJob"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.compute.text_extraction_job.TextExtractionJob" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#svlearn.compute.bootcamp_compute_job.BootcampComputeJob" title="svlearn.compute.bootcamp_compute_job.BootcampComputeJob"><code class="xref py py-class docutils literal notranslate"><span class="pre">BootcampComputeJob</span></code></a></p>
+<p>This class is the entry point for the text extraction job.
+Given a directory of documents, it read all the files in the directory,
+and all the subdirectories recursively, and extracts plain text from each file.</p>
+<p>It then stores the extracted text in a database table.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="svlearn.compute.text_extraction_job.TextExtractionJob.describe">
+<span class="sig-name descname"><span class="pre">describe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/svlearn/compute/text_extraction_job.html#TextExtractionJob.describe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.compute.text_extraction_job.TextExtractionJob.describe" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svlearn.compute.text_extraction_job.TextExtractionJob.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/svlearn/compute/text_extraction_job.html#TextExtractionJob.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.compute.text_extraction_job.TextExtractionJob.run" title="Link to this definition"></a></dt>
+<dd><p>This method is the entry point for the compute job where
+the text is extracted from the documents, and stored in a database table.
+:return: None</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-svlearn.compute">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-svlearn.compute" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="svlearn.common.html" class="btn btn-neutral float-left" title="svlearn.common package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="svlearn.config.html" class="btn btn-neutral float-right" title="svlearn.config package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Asif Qamar.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

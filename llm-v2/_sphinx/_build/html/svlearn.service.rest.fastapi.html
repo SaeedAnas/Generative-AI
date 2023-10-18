@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>svlearn.service.rest.fastapi package &mdash; LLM-Bootcamp 1.0.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=8d563738"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="import required modules." href="demo.html" />
+    <link rel="prev" title="svlearn.service.rest.rayserve package" href="svlearn.service.rest.rayserve.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            LLM-Bootcamp
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="svlearn.html">svlearn package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="svlearn.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="svlearn.common.html">svlearn.common package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.compute.html">svlearn.compute package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.config.html">svlearn.config package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.sql.html">svlearn.sql package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.text.html">svlearn.text package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.service.rest.rayserve.html">svlearn.service.rest.rayserve package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">svlearn.service.rest.fastapi package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-svlearn.service.rest.fastapi.clean_chunk_fastapi_service">svlearn.service.rest.fastapi.clean_chunk_fastapi_service module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-svlearn.service.rest.fastapi.faiss_fastapi_index_builder_service">svlearn.service.rest.fastapi.faiss_fastapi_index_builder_service module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-svlearn.service.rest.fastapi.sentence_embedding_fastapi_service">svlearn.service.rest.fastapi.sentence_embedding_fastapi_service module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-svlearn.service.rest.fastapi">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.html#module-svlearn">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="demo.html">import required modules.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo.html#provide-filepath">provide filepath</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo.html#To-get-raw-content-of-input-file">To get raw-content of input file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo.html#To-get-chunked-sentences">To get chunked sentences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo.html#To-get-input-file-type">To get input-file type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo.html#To-get-language-of-input-document-content.">To get language of input-document content.</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Content:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="elastic-search-notes.html">ElasticSearch installation notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elastic-search-notes.html#Python-ES-installation">Python ES installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elastic-search-notes.html#Sample-python-code">Sample python code</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">LLM-Bootcamp</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="svlearn.html">svlearn package</a></li>
+      <li class="breadcrumb-item active">svlearn.service.rest.fastapi package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/svlearn.service.rest.fastapi.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="svlearn-service-rest-fastapi-package">
+<h1>svlearn.service.rest.fastapi package<a class="headerlink" href="#svlearn-service-rest-fastapi-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-svlearn.service.rest.fastapi.clean_chunk_fastapi_service">
+<span id="svlearn-service-rest-fastapi-clean-chunk-fastapi-service-module"></span><h2>svlearn.service.rest.fastapi.clean_chunk_fastapi_service module<a class="headerlink" href="#module-svlearn.service.rest.fastapi.clean_chunk_fastapi_service" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="svlearn.service.rest.fastapi.clean_chunk_fastapi_service.CleanChunkModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">svlearn.service.rest.fastapi.clean_chunk_fastapi_service.</span></span><span class="sig-name descname"><span class="pre">CleanChunkModel</span></span><a class="reference internal" href="_modules/svlearn/service/rest/fastapi/clean_chunk_fastapi_service.html#CleanChunkModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.service.rest.fastapi.clean_chunk_fastapi_service.CleanChunkModel" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This class is the entry point for the clean/chunk service.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="svlearn.service.rest.fastapi.clean_chunk_fastapi_service.CleanChunkModel.initialize_chunker">
+<span class="sig-name descname"><span class="pre">initialize_chunker</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/svlearn/service/rest/fastapi/clean_chunk_fastapi_service.html#CleanChunkModel.initialize_chunker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.service.rest.fastapi.clean_chunk_fastapi_service.CleanChunkModel.initialize_chunker" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="svlearn.service.rest.fastapi.clean_chunk_fastapi_service.InputRequest">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">svlearn.service.rest.fastapi.clean_chunk_fastapi_service.</span></span><span class="sig-name descname"><span class="pre">InputRequest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/svlearn/service/rest/fastapi/clean_chunk_fastapi_service.html#InputRequest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.service.rest.fastapi.clean_chunk_fastapi_service.InputRequest" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="svlearn.service.rest.fastapi.clean_chunk_fastapi_service.InputRequest.text">
+<span class="sig-name descname"><span class="pre">text</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#svlearn.service.rest.fastapi.clean_chunk_fastapi_service.InputRequest.text" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="svlearn.service.rest.fastapi.clean_chunk_fastapi_service.chunk">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">svlearn.service.rest.fastapi.clean_chunk_fastapi_service.</span></span><span class="sig-name descname"><span class="pre">chunk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#svlearn.service.rest.fastapi.clean_chunk_fastapi_service.InputRequest" title="svlearn.service.rest.fastapi.clean_chunk_fastapi_service.InputRequest"><span class="pre">InputRequest</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/svlearn/service/rest/fastapi/clean_chunk_fastapi_service.html#chunk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.service.rest.fastapi.clean_chunk_fastapi_service.chunk" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-svlearn.service.rest.fastapi.faiss_fastapi_index_builder_service">
+<span id="svlearn-service-rest-fastapi-faiss-fastapi-index-builder-service-module"></span><h2>svlearn.service.rest.fastapi.faiss_fastapi_index_builder_service module<a class="headerlink" href="#module-svlearn.service.rest.fastapi.faiss_fastapi_index_builder_service" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="svlearn.service.rest.fastapi.faiss_fastapi_index_builder_service.FaissIndexBuilderService">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">svlearn.service.rest.fastapi.faiss_fastapi_index_builder_service.</span></span><span class="sig-name descname"><span class="pre">FaissIndexBuilderService</span></span><a class="reference internal" href="_modules/svlearn/service/rest/fastapi/faiss_fastapi_index_builder_service.html#FaissIndexBuilderService"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.service.rest.fastapi.faiss_fastapi_index_builder_service.FaissIndexBuilderService" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="svlearn.config.html#svlearn.config.configuration.ConfigurationMixin" title="svlearn.config.configuration.ConfigurationMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigurationMixin</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="svlearn.service.rest.fastapi.faiss_fastapi_index_builder_service.FaissIndexBuilderService.initialize_index">
+<span class="sig-name descname"><span class="pre">initialize_index</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/svlearn/service/rest/fastapi/faiss_fastapi_index_builder_service.html#FaissIndexBuilderService.initialize_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.service.rest.fastapi.faiss_fastapi_index_builder_service.FaissIndexBuilderService.initialize_index" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svlearn.service.rest.fastapi.faiss_fastapi_index_builder_service.FaissIndexBuilderService.save_index">
+<span class="sig-name descname"><span class="pre">save_index</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/svlearn/service/rest/fastapi/faiss_fastapi_index_builder_service.html#FaissIndexBuilderService.save_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.service.rest.fastapi.faiss_fastapi_index_builder_service.FaissIndexBuilderService.save_index" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="svlearn.service.rest.fastapi.faiss_fastapi_index_builder_service.VectorRequest">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">svlearn.service.rest.fastapi.faiss_fastapi_index_builder_service.</span></span><span class="sig-name descname"><span class="pre">VectorRequest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vectors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/svlearn/service/rest/fastapi/faiss_fastapi_index_builder_service.html#VectorRequest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.service.rest.fastapi.faiss_fastapi_index_builder_service.VectorRequest" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="svlearn.service.rest.fastapi.faiss_fastapi_index_builder_service.VectorRequest.vectors">
+<span class="sig-name descname"><span class="pre">vectors</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#svlearn.service.rest.fastapi.faiss_fastapi_index_builder_service.VectorRequest.vectors" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="svlearn.service.rest.fastapi.faiss_fastapi_index_builder_service.add_to_index">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">svlearn.service.rest.fastapi.faiss_fastapi_index_builder_service.</span></span><span class="sig-name descname"><span class="pre">add_to_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#svlearn.service.rest.fastapi.faiss_fastapi_index_builder_service.VectorRequest" title="svlearn.service.rest.fastapi.faiss_fastapi_index_builder_service.VectorRequest"><span class="pre">VectorRequest</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/svlearn/service/rest/fastapi/faiss_fastapi_index_builder_service.html#add_to_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.service.rest.fastapi.faiss_fastapi_index_builder_service.add_to_index" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-svlearn.service.rest.fastapi.sentence_embedding_fastapi_service">
+<span id="svlearn-service-rest-fastapi-sentence-embedding-fastapi-service-module"></span><h2>svlearn.service.rest.fastapi.sentence_embedding_fastapi_service module<a class="headerlink" href="#module-svlearn.service.rest.fastapi.sentence_embedding_fastapi_service" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="svlearn.service.rest.fastapi.sentence_embedding_fastapi_service.InputRequest">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">svlearn.service.rest.fastapi.sentence_embedding_fastapi_service.</span></span><span class="sig-name descname"><span class="pre">InputRequest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sentences</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/svlearn/service/rest/fastapi/sentence_embedding_fastapi_service.html#InputRequest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.service.rest.fastapi.sentence_embedding_fastapi_service.InputRequest" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="svlearn.service.rest.fastapi.sentence_embedding_fastapi_service.InputRequest.sentences">
+<span class="sig-name descname"><span class="pre">sentences</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#svlearn.service.rest.fastapi.sentence_embedding_fastapi_service.InputRequest.sentences" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="svlearn.service.rest.fastapi.sentence_embedding_fastapi_service.SentenceEncoderModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">svlearn.service.rest.fastapi.sentence_embedding_fastapi_service.</span></span><span class="sig-name descname"><span class="pre">SentenceEncoderModel</span></span><a class="reference internal" href="_modules/svlearn/service/rest/fastapi/sentence_embedding_fastapi_service.html#SentenceEncoderModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.service.rest.fastapi.sentence_embedding_fastapi_service.SentenceEncoderModel" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This class is the entry point for the sentence encoder service.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="svlearn.service.rest.fastapi.sentence_embedding_fastapi_service.SentenceEncoderModel.initialize_embedder">
+<span class="sig-name descname"><span class="pre">initialize_embedder</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/svlearn/service/rest/fastapi/sentence_embedding_fastapi_service.html#SentenceEncoderModel.initialize_embedder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.service.rest.fastapi.sentence_embedding_fastapi_service.SentenceEncoderModel.initialize_embedder" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="svlearn.service.rest.fastapi.sentence_embedding_fastapi_service.embedding">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">svlearn.service.rest.fastapi.sentence_embedding_fastapi_service.</span></span><span class="sig-name descname"><span class="pre">embedding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#svlearn.service.rest.fastapi.sentence_embedding_fastapi_service.InputRequest" title="svlearn.service.rest.fastapi.sentence_embedding_fastapi_service.InputRequest"><span class="pre">InputRequest</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/svlearn/service/rest/fastapi/sentence_embedding_fastapi_service.html#embedding"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.service.rest.fastapi.sentence_embedding_fastapi_service.embedding" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-svlearn.service.rest.fastapi">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-svlearn.service.rest.fastapi" title="Link to this heading"></a></h2>
+<p>This module provides a simple FastAPI based
+service for some of the bootcamp exercises.</p>
+<p>Recall from our discussion that you should prefer
+a model-server such as Ray Serve, PyTorch Serve,
+TensorFlow Serving, etc.  for production – they
+have AI-model serving specific features built
+toward concurrency control, load balancing, etc.</p>
+<p>However, sometimes you may want to quickly test
+out your ideas, and FastAPI provides a quick route
+during the development process.  This module
+provides a few simple services that you can use
+for testing out your ideas.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="svlearn.service.rest.rayserve.html" class="btn btn-neutral float-left" title="svlearn.service.rest.rayserve package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="demo.html" class="btn btn-neutral float-right" title="import required modules." accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Asif Qamar.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

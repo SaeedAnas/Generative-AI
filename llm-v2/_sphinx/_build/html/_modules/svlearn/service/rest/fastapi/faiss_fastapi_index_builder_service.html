@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>svlearn.service.rest.fastapi.faiss_fastapi_index_builder_service &mdash; LLM-Bootcamp 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            LLM-Bootcamp
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../svlearn.html">svlearn package</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../demo.html">import required modules.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../demo.html#provide-filepath">provide filepath</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../demo.html#To-get-raw-content-of-input-file">To get raw-content of input file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../demo.html#To-get-chunked-sentences">To get chunked sentences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../demo.html#To-get-input-file-type">To get input-file type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../demo.html#To-get-language-of-input-document-content.">To get language of input-document content.</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Content:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../elastic-search-notes.html">ElasticSearch installation notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../elastic-search-notes.html#Python-ES-installation">Python ES installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../elastic-search-notes.html#Sample-python-code">Sample python code</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">LLM-Bootcamp</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">svlearn.service.rest.fastapi.faiss_fastapi_index_builder_service</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for svlearn.service.rest.fastapi.faiss_fastapi_index_builder_service</h1><div class="highlight"><pre>
+<span></span><span class="c1">#  -------------------------------------------------------------------------------------------------</span>
+<span class="c1">#   Copyright (c) 2023.  SupportVectors AI Lab</span>
+<span class="c1">#   This code is part of the training material, and therefore part of the intellectual property.</span>
+<span class="c1">#   It may not be reused or shared without the explicit, written permission of SupportVectors.</span>
+<span class="c1">#  #</span>
+<span class="c1">#   Use is limited to the duration and purpose of the training at SupportVectors.</span>
+<span class="c1">#  #</span>
+<span class="c1">#   Author: Chandar L</span>
+<span class="c1">#  -------------------------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="kn">import</span> <span class="nn">logging</span> <span class="k">as</span> <span class="nn">log</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">uvicorn</span>
+
+<span class="kn">from</span> <span class="nn">svlearn.config</span> <span class="kn">import</span> <span class="n">ConfigurationMixin</span>
+<span class="kn">from</span> <span class="nn">svlearn.text</span> <span class="kn">import</span> <span class="n">FaissIndexer</span>
+
+
+<span class="kn">import</span> <span class="nn">threading</span>
+
+<span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">FastAPI</span>
+<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<div class="viewcode-block" id="VectorRequest"><a class="viewcode-back" href="../../../../../svlearn.service.rest.fastapi.html#svlearn.service.rest.fastapi.faiss_fastapi_index_builder_service.VectorRequest">[docs]</a><span class="k">class</span> <span class="nc">VectorRequest</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">vectors</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]]</span></div>
+
+
+
+<div class="viewcode-block" id="FaissIndexBuilderService"><a class="viewcode-back" href="../../../../../svlearn.service.rest.fastapi.html#svlearn.service.rest.fastapi.faiss_fastapi_index_builder_service.FaissIndexBuilderService">[docs]</a><span class="k">class</span> <span class="nc">FaissIndexBuilderService</span><span class="p">(</span><span class="n">ConfigurationMixin</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+<div class="viewcode-block" id="FaissIndexBuilderService.initialize_index"><a class="viewcode-back" href="../../../../../svlearn.service.rest.fastapi.html#svlearn.service.rest.fastapi.faiss_fastapi_index_builder_service.FaissIndexBuilderService.initialize_index">[docs]</a>    <span class="k">def</span> <span class="nf">initialize_index</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_config</span><span class="p">()</span>
+
+        <span class="n">index_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;search&#39;</span><span class="p">][</span><span class="s1">&#39;faiss&#39;</span><span class="p">][</span><span class="s1">&#39;index_file&#39;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">index_file</span> <span class="o">=</span> <span class="n">index_file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">faiss_indexer</span> <span class="o">=</span> <span class="n">FaissIndexer</span><span class="p">(</span><span class="n">index_file</span><span class="o">=</span><span class="n">index_file</span><span class="p">,</span> <span class="n">dimension</span><span class="o">=</span><span class="mi">512</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># keep track of un-persisted updates to the index.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">VectorRequest</span><span class="p">):</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received indexing request&quot;</span><span class="p">)</span>
+        <span class="n">vectors_with_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]]</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">vectors</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">vectors</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received empty vectors list. Ignoring.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;nothing to index!&#39;</span><span class="p">}</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Adding </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">vectors_with_ids</span><span class="p">)</span><span class="si">}</span><span class="s2"> vectors to the index&quot;</span><span class="p">)</span>
+
+        <span class="c1"># extract the ids and vectors from the input</span>
+        <span class="n">ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ind_id</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">ind_id</span> <span class="ow">in</span> <span class="n">vectors_with_ids</span><span class="p">])</span>
+        <span class="n">vectors_list</span><span class="p">:</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ind_id</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">ind_id</span> <span class="ow">in</span> <span class="n">vectors_with_ids</span><span class="p">]</span>
+        <span class="n">vectors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">vectors_list</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+
+        <span class="c1"># train the faiss index if it is not trained already</span>
+        <span class="c1">#</span>
+        <span class="c1"># TODO: we need to think on how to periodically retrain the index,</span>
+        <span class="c1">#  as the data is added to the index, and also how to pass it</span>
+        <span class="c1">#  various parameters if needed, such as number of clusters for IVF, etc.</span>
+        <span class="c1">#  For now, we will just train it once, and then add the vectors to it.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># train the index if it is not trained already</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">faiss_indexer</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">is_trained</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">faiss_indexer</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">vectors</span><span class="p">)</span>
+            <span class="c1"># add the vectors to the index</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">faiss_indexer</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">add_with_ids</span><span class="p">(</span><span class="n">vectors</span><span class="p">,</span> <span class="n">ids</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error while adding vectors to the faiss-index: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">e</span>
+        <span class="c1"># persist the index to file every 10_000 updates</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">counter</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vectors_with_ids</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">counter</span> <span class="o">&gt;</span> <span class="mi">10_000</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save_index</span><span class="p">()</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Added </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">vectors_with_ids</span><span class="p">)</span><span class="si">}</span><span class="s2"> vectors to the index&quot;</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Current index size: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">faiss_indexer</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;success&#39;</span><span class="p">}</span>
+
+<div class="viewcode-block" id="FaissIndexBuilderService.save_index"><a class="viewcode-back" href="../../../../../svlearn.service.rest.fastapi.html#svlearn.service.rest.fastapi.faiss_fastapi_index_builder_service.FaissIndexBuilderService.save_index">[docs]</a>    <span class="k">def</span> <span class="nf">save_index</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Persisting the index to file: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">index_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">faiss_indexer</span><span class="o">.</span><span class="n">save_index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index_file</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Index persisted to file: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">index_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error while persisting the index to file: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">index_file</span><span class="si">}</span><span class="s2">. Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">e</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span></div></div>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
+<span class="n">builder</span> <span class="o">=</span> <span class="n">FaissIndexBuilderService</span><span class="p">()</span>
+
+<div class="viewcode-block" id="add_to_index"><a class="viewcode-back" href="../../../../../svlearn.service.rest.fastapi.html#svlearn.service.rest.fastapi.faiss_fastapi_index_builder_service.add_to_index">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/faiss_index_builder&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">add_to_index</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">VectorRequest</span><span class="p">)</span> <span class="p">:</span>
+    <span class="k">return</span> <span class="n">builder</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">request</span><span class="o">=</span><span class="n">request</span><span class="p">)</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">uvicorn</span>
+    <span class="n">mixin</span> <span class="o">=</span> <span class="n">ConfigurationMixin</span><span class="p">()</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">mixin</span><span class="o">.</span><span class="n">load_config</span><span class="p">()</span>
+    <span class="n">host</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;search&#39;</span><span class="p">][</span><span class="s1">&#39;faiss&#39;</span><span class="p">][</span><span class="s1">&#39;index_host&#39;</span><span class="p">]</span>
+    <span class="n">port</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;search&#39;</span><span class="p">][</span><span class="s1">&#39;faiss&#39;</span><span class="p">][</span><span class="s1">&#39;index_port&#39;</span><span class="p">]</span>
+
+    <span class="n">builder</span><span class="o">.</span><span class="n">initialize_index</span><span class="p">()</span>
+
+    <span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">)</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Started serving FaissIndexBuilderService&quot;</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Asif Qamar.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

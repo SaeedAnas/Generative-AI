@@ -1,0 +1,140 @@
+Steps to run the solution on Mac/Linux: 
+
+0. Install python packages individually or run requirements.txt
+This is on my env, you should add any additional missing module
+
+pip install pykwalify PyYAML
+pip install -U "ray[data,serve]"
+
+pip install -U pyspark
+pip install pyspark[sql]
+pip install "pyspark[sql]"
+pip install "pyspark[pandas_on_spark]"
+pip install "pyspark[connect]"
+
+1. Spark Installation
+Follow the portal site instructions, make sure pyspark CLI works by running it.
+
+2. MariaDB/MySql
+Follow the portal site instructions
+	brew install mariadb (Mac only)
+	mysql.server start
+	mysql
+	# add password
+	ALTER USER 'root'@'localhost' IDENTIFIED BY ‘admin’;
+	show databases;
+	connect to mysql db with new password 
+	# setup connection in DBeaver
+
+3. run setup in dev mode
+pip install -e .
+
+4. To run spark jobs both the driver and node needs to have same python version
+I was getting error, had a different versions, if not you can set yours
+do not copy as it is, change to your python locations in the conda env, mine is llama
+
+export PYSPARK_PYTHON=$HOME/dev/apps/anaconda3/envs/llama/bin/python
+export PYSPARK_DRIVER_PYTHON=$HOME/dev/apps/anaconda3/envs/llama/bin/python
+echo $PYSPARK_PYTHON
+echo $PYSPARK_DRIVER_PYTHON
+omz reload or your bash environement
+
+5. Edit bootcamp-config.yaml, to match your DB credentials and directory, keep indentation
+
+6. run the sql script to create database and tables,
+sql -> bootcamp-project-1.sql
+makesure tables are created.
+
+7. on mac, Already set the GPU to 0 no change,
+ on linux with Nvidia GPU to 1, search/replace "num_gpus": 1
+	clean_chunk_service.py
+	faiis_index_builder_service.py
+	faiss_serach_service.py
+	query_results_reranking_service.py
+	sentence_embedding_service.py
+
+8. Extract the text from various doc and persist in DB in document.
+python svlearn/compute/text_extraction_job.py
+
+9. Start the services either using Fastapi or Ray serve, use FastApi for now 
+Services/jobs, you can run all of them or individually one by one.
+Always service first and then job
+If using Ray, Start the ray
+ray start --head
+# check if it is running,
+http://localhost:8265/
+
+10. Create a decent chunks from extracted text and persist in Chunk table 
+Make sure chunker service is running and chunker created in db
+Srevice URL: http://localhost:8800/chunker
+Fast: python svlearn/service/rest/fastapi/clean_chunk_fastapi_service.py
+OR
+Ray:  python svlearn/service/rest/rayserve/clean_chunk_service.py
+Job: python svlearn/compute/chunker_job.py
+
+11. Create a vector embedding for the cunks and persist in chunks table
+Srevice URL: http://localhost:8800/embedding
+Fast: python svlearn/service/rest/fastapi/sentence_embedding_fastapi_service.py
+OR
+Ray: python svlearn/service/rest/rayserve/sentence_embedding_service.py
+Job: python svlearn/compute/chunk_vectorizer.py
+
+12. Create a ElastiSearch index, check service is running
+Srevice URL: https://localhost:9200, If error, check need to modify for ca_cert
+python svlearn/compute/es_indexer_job.py
+
+13. Create a Faiss index
+Srevice URL: http://localhost:8800/faiss_index_builder
+Fast: python svlearn/service/rest/fastapi/faiss_index_builder_fastapi_service.py
+OR
+Ray: python svlearn/service/rest/rayserve/faiss_index_builder_service.py
+Job: python svlearn/compute/ann_indexer_job.py
+
+14. Search: 
+These 2 services should be running,
+Service URL: http://localhost:8800/faiss_search
+Service URL: http://localhost:8800/rerank
+Service URL: http://localhost:8800/search
+Fast:
+python svlearn/service/rest/fastapi/faiss_search_fastapi_service.py
+python svlearn/service/rest/fastapi/query_results_reranking_fastapi_service.py
+Ray:
+python svlearn/service/rest/rayserve/faiss_search_service.py
+python svlearn/service/rest/rayserve/query_results_reranking_service.py
+
+Finally Search: python svlearn/service/rest/fastapi/search_fastapi_service.py
+Json output in browser, http://localhost:8006/search?query=spark&k=5
+
+UI: Angular
+Install nodejs
+>ng serve
+localhost:4200 
+
+===============================================================================================
+
+DEBUG: You will be doing it lot,
+Kibana: localhost:5601
+
+GET /_cat/indices?v   # list indices
+DELETE /documents     # delete document
+# Check if chunks is indexed, 20 results
+get /documents/_search 
+{ 
+   "query": {
+       "match_all": {}
+   },
+   "size": 20
+}
+
+If you need to rerun any jobs, make sure you reset to 0 again
+in the db tables columns like CHUNKED, ES_INDEXED, VECTORIZED, ANN_INDEXED.
+
+# To rerun faiss index
+UPDATE CHUNK SET ann_indexed = 0 WHERE ann_indexed = 1;
+
+TODO: Inconsistency/Refactor:
+1. rename the files to same as job/service 
+2. Add method return types
+3. drop mysql for postgres
+4. Replace PySpark with Ray Data
+5. Fix ray serve  

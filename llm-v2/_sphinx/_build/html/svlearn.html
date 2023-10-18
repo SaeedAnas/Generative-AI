@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>svlearn package &mdash; LLM-Bootcamp 1.0.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=8d563738"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="svlearn.common package" href="svlearn.common.html" />
+    <link rel="prev" title="Welcome to LLM-Bootcamp’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            LLM-Bootcamp
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">svlearn package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.common.html">svlearn.common package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.compute.html">svlearn.compute package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.config.html">svlearn.config package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.sql.html">svlearn.sql package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.text.html">svlearn.text package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.service.rest.rayserve.html">svlearn.service.rest.rayserve package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.service.rest.fastapi.html">svlearn.service.rest.fastapi package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-svlearn">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="demo.html">import required modules.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo.html#provide-filepath">provide filepath</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo.html#To-get-raw-content-of-input-file">To get raw-content of input file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo.html#To-get-chunked-sentences">To get chunked sentences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo.html#To-get-input-file-type">To get input-file type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo.html#To-get-language-of-input-document-content.">To get language of input-document content.</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Content:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="elastic-search-notes.html">ElasticSearch installation notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elastic-search-notes.html#Python-ES-installation">Python ES installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elastic-search-notes.html#Sample-python-code">Sample python code</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">LLM-Bootcamp</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">svlearn package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/svlearn.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="svlearn-package">
+<h1>svlearn package<a class="headerlink" href="#svlearn-package" title="Link to this heading"></a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="svlearn.common.html">svlearn.common package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.common.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.common.html#module-svlearn.common.nnio">svlearn.common.nnio module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.common.html#svlearn.common.nnio.load_model"><code class="docutils literal notranslate"><span class="pre">load_model()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.common.html#svlearn.common.nnio.save_model"><code class="docutils literal notranslate"><span class="pre">save_model()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.common.html#module-svlearn.common.sv_types">svlearn.common.sv_types module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.common.html#module-svlearn.common.svexception">svlearn.common.svexception module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.common.html#svlearn.common.svexception.MissingArgumentError"><code class="docutils literal notranslate"><span class="pre">MissingArgumentError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.common.html#svlearn.common.svexception.SVError"><code class="docutils literal notranslate"><span class="pre">SVError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.common.html#svlearn.common.svexception.UnspecifiedDirectoryError"><code class="docutils literal notranslate"><span class="pre">UnspecifiedDirectoryError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.common.html#svlearn.common.svexception.UnspecifiedFileError"><code class="docutils literal notranslate"><span class="pre">UnspecifiedFileError</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.common.html#module-svlearn.common.utils">svlearn.common.utils module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.common.html#svlearn.common.utils.delete_file"><code class="docutils literal notranslate"><span class="pre">delete_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.common.html#svlearn.common.utils.directory_exists"><code class="docutils literal notranslate"><span class="pre">directory_exists()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.common.html#svlearn.common.utils.directory_is_empty"><code class="docutils literal notranslate"><span class="pre">directory_is_empty()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.common.html#svlearn.common.utils.directory_readable"><code class="docutils literal notranslate"><span class="pre">directory_readable()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.common.html#svlearn.common.utils.directory_writable"><code class="docutils literal notranslate"><span class="pre">directory_writable()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.common.html#svlearn.common.utils.ensure_directory"><code class="docutils literal notranslate"><span class="pre">ensure_directory()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.common.html#svlearn.common.utils.file_exists"><code class="docutils literal notranslate"><span class="pre">file_exists()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.common.html#svlearn.common.utils.file_is_empty"><code class="docutils literal notranslate"><span class="pre">file_is_empty()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.common.html#svlearn.common.utils.file_readable"><code class="docutils literal notranslate"><span class="pre">file_readable()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.common.html#svlearn.common.utils.file_writable"><code class="docutils literal notranslate"><span class="pre">file_writable()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.common.html#module-svlearn.common">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="svlearn.compute.html">svlearn.compute package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.compute.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.compute.html#module-svlearn.compute.ann_indexer_job">svlearn.compute.ann_indexer_job module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.compute.html#svlearn.compute.ann_indexer_job.ANNIndexerJob"><code class="docutils literal notranslate"><span class="pre">ANNIndexerJob</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="svlearn.compute.html#svlearn.compute.ann_indexer_job.ANNIndexerJob.describe"><code class="docutils literal notranslate"><span class="pre">ANNIndexerJob.describe()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="svlearn.compute.html#svlearn.compute.ann_indexer_job.ANNIndexerJob.run"><code class="docutils literal notranslate"><span class="pre">ANNIndexerJob.run()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.compute.html#svlearn.compute.ann_indexer_job.call_faiss_indexer_endpoint"><code class="docutils literal notranslate"><span class="pre">call_faiss_indexer_endpoint()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.compute.html#svlearn.compute.ann_indexer_job.index_per_partition"><code class="docutils literal notranslate"><span class="pre">index_per_partition()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.compute.html#module-svlearn.compute.bootcamp_compute_job">svlearn.compute.bootcamp_compute_job module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.compute.html#svlearn.compute.bootcamp_compute_job.BootcampComputeJob"><code class="docutils literal notranslate"><span class="pre">BootcampComputeJob</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="svlearn.compute.html#svlearn.compute.bootcamp_compute_job.BootcampComputeJob.describe"><code class="docutils literal notranslate"><span class="pre">BootcampComputeJob.describe()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="svlearn.compute.html#svlearn.compute.bootcamp_compute_job.BootcampComputeJob.run"><code class="docutils literal notranslate"><span class="pre">BootcampComputeJob.run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.compute.html#module-svlearn.compute.chunk_vectorizer">svlearn.compute.chunk_vectorizer module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.compute.html#svlearn.compute.chunk_vectorizer.ChunkVectorizerJob"><code class="docutils literal notranslate"><span class="pre">ChunkVectorizerJob</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="svlearn.compute.html#svlearn.compute.chunk_vectorizer.ChunkVectorizerJob.describe"><code class="docutils literal notranslate"><span class="pre">ChunkVectorizerJob.describe()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="svlearn.compute.html#svlearn.compute.chunk_vectorizer.ChunkVectorizerJob.run"><code class="docutils literal notranslate"><span class="pre">ChunkVectorizerJob.run()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.compute.html#svlearn.compute.chunk_vectorizer.call_embedding_endpoint"><code class="docutils literal notranslate"><span class="pre">call_embedding_endpoint()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.compute.html#svlearn.compute.chunk_vectorizer.persist_vectors"><code class="docutils literal notranslate"><span class="pre">persist_vectors()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.compute.html#module-svlearn.compute.chunker_job">svlearn.compute.chunker_job module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.compute.html#svlearn.compute.chunker_job.TextChunkerJob"><code class="docutils literal notranslate"><span class="pre">TextChunkerJob</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="svlearn.compute.html#svlearn.compute.chunker_job.TextChunkerJob.describe"><code class="docutils literal notranslate"><span class="pre">TextChunkerJob.describe()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="svlearn.compute.html#svlearn.compute.chunker_job.TextChunkerJob.run"><code class="docutils literal notranslate"><span class="pre">TextChunkerJob.run()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.compute.html#svlearn.compute.chunker_job.call_chunker_endpoint"><code class="docutils literal notranslate"><span class="pre">call_chunker_endpoint()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.compute.html#svlearn.compute.chunker_job.persist_chunks"><code class="docutils literal notranslate"><span class="pre">persist_chunks()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.compute.html#module-svlearn.compute.compute_utils">svlearn.compute.compute_utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.compute.html#module-svlearn.compute.es_indexer_job">svlearn.compute.es_indexer_job module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.compute.html#svlearn.compute.es_indexer_job.ESIndexerJob"><code class="docutils literal notranslate"><span class="pre">ESIndexerJob</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="svlearn.compute.html#svlearn.compute.es_indexer_job.ESIndexerJob.describe"><code class="docutils literal notranslate"><span class="pre">ESIndexerJob.describe()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="svlearn.compute.html#svlearn.compute.es_indexer_job.ESIndexerJob.run"><code class="docutils literal notranslate"><span class="pre">ESIndexerJob.run()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.compute.html#svlearn.compute.es_indexer_job.call_rest_partition"><code class="docutils literal notranslate"><span class="pre">call_rest_partition()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.compute.html#module-svlearn.compute.text_extraction_job">svlearn.compute.text_extraction_job module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.compute.html#svlearn.compute.text_extraction_job.TextExtractionJob"><code class="docutils literal notranslate"><span class="pre">TextExtractionJob</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="svlearn.compute.html#svlearn.compute.text_extraction_job.TextExtractionJob.describe"><code class="docutils literal notranslate"><span class="pre">TextExtractionJob.describe()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="svlearn.compute.html#svlearn.compute.text_extraction_job.TextExtractionJob.run"><code class="docutils literal notranslate"><span class="pre">TextExtractionJob.run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.compute.html#module-svlearn.compute">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="svlearn.config.html">svlearn.config package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.config.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.config.html#module-svlearn.config.configuration">svlearn.config.configuration module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.config.html#svlearn.config.configuration.ConfigurationMixin"><code class="docutils literal notranslate"><span class="pre">ConfigurationMixin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="svlearn.config.html#svlearn.config.configuration.ConfigurationMixin.load_config"><code class="docutils literal notranslate"><span class="pre">ConfigurationMixin.load_config()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.config.html#module-svlearn.config">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="svlearn.sql.html">svlearn.sql package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.sql.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.sql.html#module-svlearn.sql.connect">svlearn.sql.connect module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.sql.html#svlearn.sql.connect.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.sql.html#module-svlearn.sql">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="svlearn.text.html">svlearn.text package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.text.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.text.html#module-svlearn.text.es_index_searcher">svlearn.text.es_index_searcher module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.text.html#svlearn.text.es_index_searcher.ElasticSearchIndex"><code class="docutils literal notranslate"><span class="pre">ElasticSearchIndex</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="svlearn.text.html#svlearn.text.es_index_searcher.ElasticSearchIndex.search"><code class="docutils literal notranslate"><span class="pre">ElasticSearchIndex.search()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.text.html#module-svlearn.text.faiss_indexer">svlearn.text.faiss_indexer module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.text.html#svlearn.text.faiss_indexer.FaissIndexer"><code class="docutils literal notranslate"><span class="pre">FaissIndexer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="svlearn.text.html#svlearn.text.faiss_indexer.FaissIndexer.add"><code class="docutils literal notranslate"><span class="pre">FaissIndexer.add()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="svlearn.text.html#svlearn.text.faiss_indexer.FaissIndexer.create_brute_force_index"><code class="docutils literal notranslate"><span class="pre">FaissIndexer.create_brute_force_index()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="svlearn.text.html#svlearn.text.faiss_indexer.FaissIndexer.create_hnsw_index"><code class="docutils literal notranslate"><span class="pre">FaissIndexer.create_hnsw_index()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="svlearn.text.html#svlearn.text.faiss_indexer.FaissIndexer.create_ivf_index"><code class="docutils literal notranslate"><span class="pre">FaissIndexer.create_ivf_index()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="svlearn.text.html#svlearn.text.faiss_indexer.FaissIndexer.load_index"><code class="docutils literal notranslate"><span class="pre">FaissIndexer.load_index()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="svlearn.text.html#svlearn.text.faiss_indexer.FaissIndexer.save_index"><code class="docutils literal notranslate"><span class="pre">FaissIndexer.save_index()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="svlearn.text.html#svlearn.text.faiss_indexer.FaissIndexer.size"><code class="docutils literal notranslate"><span class="pre">FaissIndexer.size()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.text.html#module-svlearn.text.indexer_poc">svlearn.text.indexer_poc module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.text.html#module-svlearn.text.query_results_reranker">svlearn.text.query_results_reranker module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.text.html#svlearn.text.query_results_reranker.QueryResultsReRanker"><code class="docutils literal notranslate"><span class="pre">QueryResultsReRanker</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="svlearn.text.html#svlearn.text.query_results_reranker.QueryResultsReRanker.rerank"><code class="docutils literal notranslate"><span class="pre">QueryResultsReRanker.rerank()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.text.html#module-svlearn.text.sentence_encoder">svlearn.text.sentence_encoder module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.text.html#svlearn.text.sentence_encoder.SentenceEncoder"><code class="docutils literal notranslate"><span class="pre">SentenceEncoder</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="svlearn.text.html#svlearn.text.sentence_encoder.SentenceEncoder.encode"><code class="docutils literal notranslate"><span class="pre">SentenceEncoder.encode()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.text.html#module-svlearn.text.text_chunker">svlearn.text.text_chunker module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.text.html#svlearn.text.text_chunker.ChunkText"><code class="docutils literal notranslate"><span class="pre">ChunkText</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="svlearn.text.html#svlearn.text.text_chunker.ChunkText.cosine_similarity"><code class="docutils literal notranslate"><span class="pre">ChunkText.cosine_similarity()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="svlearn.text.html#svlearn.text.text_chunker.ChunkText.create_chunks"><code class="docutils literal notranslate"><span class="pre">ChunkText.create_chunks()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="svlearn.text.html#svlearn.text.text_chunker.ChunkText.create_list_of_chunks"><code class="docutils literal notranslate"><span class="pre">ChunkText.create_list_of_chunks()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.text.html#module-svlearn.text.text_extractor">svlearn.text.text_extractor module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.text.html#svlearn.text.text_extractor.TextExtraction"><code class="docutils literal notranslate"><span class="pre">TextExtraction</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="svlearn.text.html#svlearn.text.text_extractor.TextExtraction.document_type"><code class="docutils literal notranslate"><span class="pre">TextExtraction.document_type()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="svlearn.text.html#svlearn.text.text_extractor.TextExtraction.to_text"><code class="docutils literal notranslate"><span class="pre">TextExtraction.to_text()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.text.html#svlearn.text.text_extractor.TextExtractionError"><code class="docutils literal notranslate"><span class="pre">TextExtractionError</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.text.html#module-svlearn.text">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="svlearn.service.rest.rayserve.html">svlearn.service.rest.rayserve package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.service.rest.rayserve.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.service.rest.rayserve.html#module-svlearn.service.rest.rayserve.clean_chunk_service">svlearn.service.rest.rayserve.clean_chunk_service module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.service.rest.rayserve.html#svlearn.service.rest.rayserve.clean_chunk_service.CleanChunkModel"><code class="docutils literal notranslate"><span class="pre">CleanChunkModel</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.service.rest.rayserve.html#module-svlearn.service.rest.rayserve.sentence_embedding_service">svlearn.service.rest.rayserve.sentence_embedding_service module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.service.rest.rayserve.html#svlearn.service.rest.rayserve.sentence_embedding_service.SentenceEncoderModel"><code class="docutils literal notranslate"><span class="pre">SentenceEncoderModel</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.service.rest.rayserve.html#module-svlearn.service.rest.rayserve.faiss_index_builder_service">svlearn.service.rest.rayserve.faiss_index_builder_service module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.service.rest.rayserve.html#svlearn.service.rest.rayserve.faiss_index_builder_service.FaissIndexBuilderService"><code class="docutils literal notranslate"><span class="pre">FaissIndexBuilderService</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.service.rest.rayserve.html#module-svlearn.service.rest.rayserve.faiss_search_service">svlearn.service.rest.rayserve.faiss_search_service module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.service.rest.rayserve.html#svlearn.service.rest.rayserve.faiss_search_service.FaissSearchService"><code class="docutils literal notranslate"><span class="pre">FaissSearchService</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.service.rest.rayserve.html#module-svlearn.service.rest.rayserve.search_service">svlearn.service.rest.rayserve.search_service module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.service.rest.rayserve.html#svlearn.service.rest.rayserve.search_service.HybridSearch"><code class="docutils literal notranslate"><span class="pre">HybridSearch</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.service.rest.rayserve.html#module-svlearn.service.rest.rayserve.query_results_reranking_service">svlearn.service.rest.rayserve.query_results_reranking_service module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.service.rest.rayserve.html#svlearn.service.rest.rayserve.query_results_reranking_service.QueryResultsReRankerModel"><code class="docutils literal notranslate"><span class="pre">QueryResultsReRankerModel</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.service.rest.rayserve.html#module-svlearn.service.rest.rayserve">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="svlearn.service.rest.fastapi.html">svlearn.service.rest.fastapi package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.service.rest.fastapi.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.service.rest.fastapi.html#module-svlearn.service.rest.fastapi.clean_chunk_fastapi_service">svlearn.service.rest.fastapi.clean_chunk_fastapi_service module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.service.rest.fastapi.html#svlearn.service.rest.fastapi.clean_chunk_fastapi_service.CleanChunkModel"><code class="docutils literal notranslate"><span class="pre">CleanChunkModel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="svlearn.service.rest.fastapi.html#svlearn.service.rest.fastapi.clean_chunk_fastapi_service.CleanChunkModel.initialize_chunker"><code class="docutils literal notranslate"><span class="pre">CleanChunkModel.initialize_chunker()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.service.rest.fastapi.html#svlearn.service.rest.fastapi.clean_chunk_fastapi_service.InputRequest"><code class="docutils literal notranslate"><span class="pre">InputRequest</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="svlearn.service.rest.fastapi.html#svlearn.service.rest.fastapi.clean_chunk_fastapi_service.InputRequest.text"><code class="docutils literal notranslate"><span class="pre">InputRequest.text</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.service.rest.fastapi.html#svlearn.service.rest.fastapi.clean_chunk_fastapi_service.chunk"><code class="docutils literal notranslate"><span class="pre">chunk()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.service.rest.fastapi.html#module-svlearn.service.rest.fastapi.faiss_fastapi_index_builder_service">svlearn.service.rest.fastapi.faiss_fastapi_index_builder_service module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.service.rest.fastapi.html#svlearn.service.rest.fastapi.faiss_fastapi_index_builder_service.FaissIndexBuilderService"><code class="docutils literal notranslate"><span class="pre">FaissIndexBuilderService</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="svlearn.service.rest.fastapi.html#svlearn.service.rest.fastapi.faiss_fastapi_index_builder_service.FaissIndexBuilderService.initialize_index"><code class="docutils literal notranslate"><span class="pre">FaissIndexBuilderService.initialize_index()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="svlearn.service.rest.fastapi.html#svlearn.service.rest.fastapi.faiss_fastapi_index_builder_service.FaissIndexBuilderService.save_index"><code class="docutils literal notranslate"><span class="pre">FaissIndexBuilderService.save_index()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.service.rest.fastapi.html#svlearn.service.rest.fastapi.faiss_fastapi_index_builder_service.VectorRequest"><code class="docutils literal notranslate"><span class="pre">VectorRequest</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="svlearn.service.rest.fastapi.html#svlearn.service.rest.fastapi.faiss_fastapi_index_builder_service.VectorRequest.vectors"><code class="docutils literal notranslate"><span class="pre">VectorRequest.vectors</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.service.rest.fastapi.html#svlearn.service.rest.fastapi.faiss_fastapi_index_builder_service.add_to_index"><code class="docutils literal notranslate"><span class="pre">add_to_index()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.service.rest.fastapi.html#module-svlearn.service.rest.fastapi.sentence_embedding_fastapi_service">svlearn.service.rest.fastapi.sentence_embedding_fastapi_service module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.service.rest.fastapi.html#svlearn.service.rest.fastapi.sentence_embedding_fastapi_service.InputRequest"><code class="docutils literal notranslate"><span class="pre">InputRequest</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="svlearn.service.rest.fastapi.html#svlearn.service.rest.fastapi.sentence_embedding_fastapi_service.InputRequest.sentences"><code class="docutils literal notranslate"><span class="pre">InputRequest.sentences</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.service.rest.fastapi.html#svlearn.service.rest.fastapi.sentence_embedding_fastapi_service.SentenceEncoderModel"><code class="docutils literal notranslate"><span class="pre">SentenceEncoderModel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="svlearn.service.rest.fastapi.html#svlearn.service.rest.fastapi.sentence_embedding_fastapi_service.SentenceEncoderModel.initialize_embedder"><code class="docutils literal notranslate"><span class="pre">SentenceEncoderModel.initialize_embedder()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.service.rest.fastapi.html#svlearn.service.rest.fastapi.sentence_embedding_fastapi_service.embedding"><code class="docutils literal notranslate"><span class="pre">embedding()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.service.rest.fastapi.html#module-svlearn.service.rest.fastapi">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="module-svlearn">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-svlearn" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to LLM-Bootcamp’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="svlearn.common.html" class="btn btn-neutral float-right" title="svlearn.common package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Asif Qamar.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

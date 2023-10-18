@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>svlearn.text package &mdash; LLM-Bootcamp 1.0.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=8d563738"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="svlearn.service.rest.rayserve package" href="svlearn.service.rest.rayserve.html" />
+    <link rel="prev" title="svlearn.sql package" href="svlearn.sql.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            LLM-Bootcamp
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="svlearn.html">svlearn package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="svlearn.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="svlearn.common.html">svlearn.common package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.compute.html">svlearn.compute package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.config.html">svlearn.config package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.sql.html">svlearn.sql package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">svlearn.text package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-svlearn.text.es_index_searcher">svlearn.text.es_index_searcher module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-svlearn.text.faiss_indexer">svlearn.text.faiss_indexer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-svlearn.text.indexer_poc">svlearn.text.indexer_poc module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-svlearn.text.query_results_reranker">svlearn.text.query_results_reranker module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-svlearn.text.sentence_encoder">svlearn.text.sentence_encoder module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-svlearn.text.text_chunker">svlearn.text.text_chunker module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-svlearn.text.text_extractor">svlearn.text.text_extractor module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-svlearn.text">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.service.rest.rayserve.html">svlearn.service.rest.rayserve package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="svlearn.service.rest.fastapi.html">svlearn.service.rest.fastapi package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="svlearn.html#module-svlearn">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="demo.html">import required modules.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo.html#provide-filepath">provide filepath</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo.html#To-get-raw-content-of-input-file">To get raw-content of input file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo.html#To-get-chunked-sentences">To get chunked sentences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo.html#To-get-input-file-type">To get input-file type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo.html#To-get-language-of-input-document-content.">To get language of input-document content.</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Content:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="elastic-search-notes.html">ElasticSearch installation notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elastic-search-notes.html#Python-ES-installation">Python ES installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elastic-search-notes.html#Sample-python-code">Sample python code</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">LLM-Bootcamp</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="svlearn.html">svlearn package</a></li>
+      <li class="breadcrumb-item active">svlearn.text package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/svlearn.text.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="svlearn-text-package">
+<h1>svlearn.text package<a class="headerlink" href="#svlearn-text-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-svlearn.text.es_index_searcher">
+<span id="svlearn-text-es-index-searcher-module"></span><h2>svlearn.text.es_index_searcher module<a class="headerlink" href="#module-svlearn.text.es_index_searcher" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="svlearn.text.es_index_searcher.ElasticSearchIndex">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">svlearn.text.es_index_searcher.</span></span><span class="sig-name descname"><span class="pre">ElasticSearchIndex</span></span><a class="reference internal" href="_modules/svlearn/text/es_index_searcher.html#ElasticSearchIndex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.text.es_index_searcher.ElasticSearchIndex" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="svlearn.config.html#svlearn.config.configuration.ConfigurationMixin" title="svlearn.config.configuration.ConfigurationMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigurationMixin</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="svlearn.text.es_index_searcher.ElasticSearchIndex.search">
+<span class="sig-name descname"><span class="pre">search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query_str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">[(&lt;class</span> <span class="pre">'str'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'float'&gt;)]</span></span></span><a class="reference internal" href="_modules/svlearn/text/es_index_searcher.html#ElasticSearchIndex.search"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.text.es_index_searcher.ElasticSearchIndex.search" title="Link to this definition"></a></dt>
+<dd><p>This method searches the elastic-search index for the given query string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>query_str</strong> – the query string</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a list of tuples, where each tuple contains the document-id and the score.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-svlearn.text.faiss_indexer">
+<span id="svlearn-text-faiss-indexer-module"></span><h2>svlearn.text.faiss_indexer module<a class="headerlink" href="#module-svlearn.text.faiss_indexer" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="svlearn.text.faiss_indexer.FaissIndexer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">svlearn.text.faiss_indexer.</span></span><span class="sig-name descname"><span class="pre">FaissIndexer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'brute_force'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nlist</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/svlearn/text/faiss_indexer.html#FaissIndexer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.text.faiss_indexer.FaissIndexer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="svlearn.config.html#svlearn.config.configuration.ConfigurationMixin" title="svlearn.config.configuration.ConfigurationMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigurationMixin</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="svlearn.text.faiss_indexer.FaissIndexer.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vector_list=[(&lt;class</span> <span class="pre">'str'&gt;</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'float'&gt;])</span></span></em><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">[(&lt;class</span> <span class="pre">'str'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'str'&gt;)]</span></span></span><a class="reference internal" href="_modules/svlearn/text/faiss_indexer.html#FaissIndexer.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.text.faiss_indexer.FaissIndexer.add" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svlearn.text.faiss_indexer.FaissIndexer.create_brute_force_index">
+<span class="sig-name descname"><span class="pre">create_brute_force_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dimension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">64</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/svlearn/text/faiss_indexer.html#FaissIndexer.create_brute_force_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.text.faiss_indexer.FaissIndexer.create_brute_force_index" title="Link to this definition"></a></dt>
+<dd><p>Create a brute-force index. Beware that this index can be very slow for large datasets.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svlearn.text.faiss_indexer.FaissIndexer.create_hnsw_index">
+<span class="sig-name descname"><span class="pre">create_hnsw_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dimension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">M</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">16</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">efConstruction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">40</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/svlearn/text/faiss_indexer.html#FaissIndexer.create_hnsw_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.text.faiss_indexer.FaissIndexer.create_hnsw_index" title="Link to this definition"></a></dt>
+<dd><p>Create a HNSW index. This index is much faster than the brute-force index; however,
+it is not as accurate as the brute-force index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dimension</strong> – the dimension of the vectors</p></li>
+<li><p><strong>M</strong> – the number of neighbors to explore at each query point</p></li>
+<li><p><strong>efConstruction</strong> – the number of neighbors to index at construction time</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svlearn.text.faiss_indexer.FaissIndexer.create_ivf_index">
+<span class="sig-name descname"><span class="pre">create_ivf_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dimension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nlist</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/svlearn/text/faiss_indexer.html#FaissIndexer.create_ivf_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.text.faiss_indexer.FaissIndexer.create_ivf_index" title="Link to this definition"></a></dt>
+<dd><p>Create an IVF index. This index is much faster than the brute-force index;
+however, it needs to be trained with a set of vectors before it can be used for search.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dimension</strong> – the dimension of the vectors</p></li>
+<li><p><strong>metric_type</strong> – the type of metric to use for computing distances between vectors</p></li>
+<li><p><strong>nlist</strong> – the number of cells in the quantizer</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svlearn.text.faiss_indexer.FaissIndexer.load_index">
+<span class="sig-name descname"><span class="pre">load_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/svlearn/text/faiss_indexer.html#FaissIndexer.load_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.text.faiss_indexer.FaissIndexer.load_index" title="Link to this definition"></a></dt>
+<dd><p>Load an existing index from file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svlearn.text.faiss_indexer.FaissIndexer.save_index">
+<span class="sig-name descname"><span class="pre">save_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/svlearn/text/faiss_indexer.html#FaissIndexer.save_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.text.faiss_indexer.FaissIndexer.save_index" title="Link to this definition"></a></dt>
+<dd><p>Save the index to file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>index_file</strong> – the name of the file to save the index to.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svlearn.text.faiss_indexer.FaissIndexer.size">
+<span class="sig-name descname"><span class="pre">size</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/svlearn/text/faiss_indexer.html#FaissIndexer.size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.text.faiss_indexer.FaissIndexer.size" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-svlearn.text.indexer_poc">
+<span id="svlearn-text-indexer-poc-module"></span><h2>svlearn.text.indexer_poc module<a class="headerlink" href="#module-svlearn.text.indexer_poc" title="Link to this heading"></a></h2>
+</section>
+<section id="module-svlearn.text.query_results_reranker">
+<span id="svlearn-text-query-results-reranker-module"></span><h2>svlearn.text.query_results_reranker module<a class="headerlink" href="#module-svlearn.text.query_results_reranker" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="svlearn.text.query_results_reranker.QueryResultsReRanker">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">svlearn.text.query_results_reranker.</span></span><span class="sig-name descname"><span class="pre">QueryResultsReRanker</span></span><a class="reference internal" href="_modules/svlearn/text/query_results_reranker.html#QueryResultsReRanker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.text.query_results_reranker.QueryResultsReRanker" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="svlearn.config.html#svlearn.config.configuration.ConfigurationMixin" title="svlearn.config.configuration.ConfigurationMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigurationMixin</span></code></a></p>
+<dl class="simple">
+<dt>This class provides the functionality of chunking text into smaller pieces,</dt><dd><p>after some cleanup. The cleanup includes removing newlines,
+tabs, and extra spaces within a sentence, etc.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="svlearn.text.query_results_reranker.QueryResultsReRanker.rerank">
+<span class="sig-name descname"><span class="pre">rerank</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/svlearn/text/query_results_reranker.html#QueryResultsReRanker.rerank"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.text.query_results_reranker.QueryResultsReRanker.rerank" title="Link to this definition"></a></dt>
+<dd><p>This method takes a query and a list of results, and returns a re-ranked
+list of results reverse-sorted by the scores determined by the model.
+:param query: the query text
+:param results: the list of results and their scores.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-svlearn.text.sentence_encoder">
+<span id="svlearn-text-sentence-encoder-module"></span><h2>svlearn.text.sentence_encoder module<a class="headerlink" href="#module-svlearn.text.sentence_encoder" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="svlearn.text.sentence_encoder.SentenceEncoder">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">svlearn.text.sentence_encoder.</span></span><span class="sig-name descname"><span class="pre">SentenceEncoder</span></span><a class="reference internal" href="_modules/svlearn/text/sentence_encoder.html#SentenceEncoder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.text.sentence_encoder.SentenceEncoder" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="svlearn.config.html#svlearn.config.configuration.ConfigurationMixin" title="svlearn.config.configuration.ConfigurationMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigurationMixin</span></code></a></p>
+<p>”
+This class provides the functionality of encoding text into vectors.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="svlearn.text.sentence_encoder.SentenceEncoder.encode">
+<span class="sig-name descname"><span class="pre">encode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sentences</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Tensor</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Tensor</span></span></span><a class="reference internal" href="_modules/svlearn/text/sentence_encoder.html#SentenceEncoder.encode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.text.sentence_encoder.SentenceEncoder.encode" title="Link to this definition"></a></dt>
+<dd><p>This method encodes a list of texts into a list of vectors.
+:param sentences: the list of texts to be encoded
+:return: the list of vectors</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-svlearn.text.text_chunker">
+<span id="svlearn-text-text-chunker-module"></span><h2>svlearn.text.text_chunker module<a class="headerlink" href="#module-svlearn.text.text_chunker" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="svlearn.text.text_chunker.ChunkText">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">svlearn.text.text_chunker.</span></span><span class="sig-name descname"><span class="pre">ChunkText</span></span><a class="reference internal" href="_modules/svlearn/text/text_chunker.html#ChunkText"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.text.text_chunker.ChunkText" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="svlearn.config.html#svlearn.config.configuration.ConfigurationMixin" title="svlearn.config.configuration.ConfigurationMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigurationMixin</span></code></a></p>
+<dl class="simple">
+<dt>This class provides the functionality of chunking text into smaller pieces,</dt><dd><p>after some cleanup. The cleanup includes removing newlines,
+tabs, and extra spaces within a sentence, etc.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="svlearn.text.text_chunker.ChunkText.cosine_similarity">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cosine_similarity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">α</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">β</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/svlearn/text/text_chunker.html#ChunkText.cosine_similarity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.text.text_chunker.ChunkText.cosine_similarity" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svlearn.text.text_chunker.ChunkText.create_chunks">
+<span class="sig-name descname"><span class="pre">create_chunks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/svlearn/text/text_chunker.html#ChunkText.create_chunks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.text.text_chunker.ChunkText.create_chunks" title="Link to this definition"></a></dt>
+<dd><p>This method takes a text, cleans it a bit and returns a list of chunks.
+:param text: the text to be chunked
+:return: the chunks as a list</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svlearn.text.text_chunker.ChunkText.create_list_of_chunks">
+<span class="sig-name descname"><span class="pre">create_list_of_chunks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/svlearn/text/text_chunker.html#ChunkText.create_list_of_chunks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.text.text_chunker.ChunkText.create_list_of_chunks" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-svlearn.text.text_extractor">
+<span id="svlearn-text-text-extractor-module"></span><h2>svlearn.text.text_extractor module<a class="headerlink" href="#module-svlearn.text.text_extractor" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="svlearn.text.text_extractor.TextExtraction">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">svlearn.text.text_extractor.</span></span><span class="sig-name descname"><span class="pre">TextExtraction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/svlearn/text/text_extractor.html#TextExtraction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.text.text_extractor.TextExtraction" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="svlearn.text.text_extractor.TextExtraction.document_type">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">document_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/svlearn/text/text_extractor.html#TextExtraction.document_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.text.text_extractor.TextExtraction.document_type" title="Link to this definition"></a></dt>
+<dd><p>Determines the MIME type of the file
+:param path: the filesystem path to the document.
+:return: the MIME-type, such as “application/pdf”</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svlearn.text.text_extractor.TextExtraction.to_text">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/svlearn/text/text_extractor.html#TextExtraction.to_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.text.text_extractor.TextExtraction.to_text" title="Link to this definition"></a></dt>
+<dd><p>Extracts plain-text from a file, in one of the Tika-supported formats
+:param path: path to the document file
+:return: text from document file</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="svlearn.text.text_extractor.TextExtractionError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">svlearn.text.text_extractor.</span></span><span class="sig-name descname"><span class="pre">TextExtractionError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/svlearn/text/text_extractor.html#TextExtractionError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svlearn.text.text_extractor.TextExtractionError" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="svlearn.common.html#svlearn.common.svexception.SVError" title="svlearn.common.svexception.SVError"><code class="xref py py-class docutils literal notranslate"><span class="pre">SVError</span></code></a></p>
+<p>Exception raised when a text could not be extracted from a file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> – name of the file from which text could not be extracted</p></li>
+<li><p><strong>message</strong> – explanation of the error</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>object</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-svlearn.text">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-svlearn.text" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="svlearn.sql.html" class="btn btn-neutral float-left" title="svlearn.sql package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="svlearn.service.rest.rayserve.html" class="btn btn-neutral float-right" title="svlearn.service.rest.rayserve package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Asif Qamar.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

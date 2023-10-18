@@ -1,0 +1,42 @@
+# to validate use
+
+#from pykwalify.core import Core
+#c = Core(source_file="bootcamp-config.yaml", schema_files=["schema-bootcamp-config.yaml"])
+#c.validate(raise_exception=True) 
+# or below cli 
+#pykwalify -d bootcamp-config.yaml -s schema-bootcamp-config.yaml
+
+
+
+type: database
+  mapping:
+    type:jdbc:
+    mapping:
+      driver-class: str
+      jar-file: str
+      url-format: str
+  password: str
+  port: int
+  schema: str
+  server: str
+  username: str
+  variant: str
+documents:
+  source-dir: str
+models:
+  device: str
+  multilingual-cross-encoder: str
+  multilingual-sentence-encoder: str
+  sentence-embedding:
+    normalize-embeddings: int
+  spacy-model: str
+  spacy-sentence-embedding-model: str
+services:
+  clean_chunk: str
+  es_index: str
+  search: str
+spark:
+  spark-home: str
+text:
+  chunk-similarity-threshold: float
+  chunk-size: int

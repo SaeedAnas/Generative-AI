@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>svlearn.compute.es_indexer_job &mdash; LLM-Bootcamp 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            LLM-Bootcamp
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../svlearn.html">svlearn package</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../demo.html">import required modules.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demo.html#provide-filepath">provide filepath</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demo.html#To-get-raw-content-of-input-file">To get raw-content of input file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demo.html#To-get-chunked-sentences">To get chunked sentences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demo.html#To-get-input-file-type">To get input-file type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demo.html#To-get-language-of-input-document-content.">To get language of input-document content.</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Content:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../elastic-search-notes.html">ElasticSearch installation notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../elastic-search-notes.html#Python-ES-installation">Python ES installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../elastic-search-notes.html#Sample-python-code">Sample python code</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">LLM-Bootcamp</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">svlearn.compute.es_indexer_job</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for svlearn.compute.es_indexer_job</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -------------------------------------------------------------------------------------------------</span>
+<span class="c1">#  Copyright (c) 2023.  SupportVectors AI Lab</span>
+<span class="c1">#  This code is part of the training material, and therefore part of the intellectual property.</span>
+<span class="c1">#  It may not be reused or shared without the explicit, written permission of SupportVectors.</span>
+<span class="c1">#</span>
+<span class="c1">#  Use is limited to the duration and purpose of the training at SupportVectors.</span>
+<span class="c1">#</span>
+<span class="c1">#  Author: Asif Qamar/Chandar L</span>
+<span class="c1"># -------------------------------------------------------------------------------------------------</span>
+
+<span class="kn">import</span> <span class="nn">logging</span> <span class="k">as</span> <span class="nn">_log</span>
+<span class="kn">from</span> <span class="nn">elasticsearch</span> <span class="kn">import</span> <span class="n">Elasticsearch</span>
+
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">DataFrame</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="kn">from</span> <span class="nn">svlearn.common</span> <span class="kn">import</span> <span class="n">SVError</span>
+<span class="kn">from</span> <span class="nn">svlearn.compute</span> <span class="kn">import</span> <span class="n">BootcampComputeJob</span>
+<span class="kn">from</span> <span class="nn">svlearn.compute.compute_utils</span> <span class="kn">import</span> <span class="n">_get_connection</span>
+<span class="kn">from</span> <span class="nn">svlearn.config.configuration</span> <span class="kn">import</span> <span class="n">ConfigurationMixin</span>
+
+
+
+<span class="k">def</span> <span class="nf">_get_elastic_client</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a connection to the ElasticSearch instance.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mixin</span> <span class="o">=</span> <span class="n">ConfigurationMixin</span><span class="p">()</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">mixin</span><span class="o">.</span><span class="n">load_config</span><span class="p">()</span>
+    <span class="n">es_password</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;elasticsearch&#39;</span><span class="p">][</span><span class="s1">&#39;password&#39;</span><span class="p">]</span>
+    <span class="n">es_home</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;elasticsearch&#39;</span><span class="p">][</span><span class="s1">&#39;eshome&#39;</span><span class="p">]</span>
+    <span class="n">es_url</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;services&#39;</span><span class="p">][</span><span class="s1">&#39;es_index&#39;</span><span class="p">]</span>
+    <span class="n">es_index</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;elasticsearch&#39;</span><span class="p">][</span><span class="s1">&#39;index_name&#39;</span><span class="p">]</span>
+
+    <span class="c1"># Create and return the client instance/index name</span>
+
+    <span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Creating connection to ElasticSearch instance at </span><span class="si">{</span><span class="n">es_url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">es</span> <span class="o">=</span>  <span class="p">(</span>
+            <span class="n">Elasticsearch</span><span class="p">(</span>
+            <span class="n">es_url</span><span class="p">,</span>
+            <span class="n">ca_certs</span><span class="o">=</span><span class="n">es_home</span> <span class="o">+</span> <span class="s2">&quot;/config/certs/http_ca.crt&quot;</span><span class="p">,</span>
+            <span class="n">basic_auth</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;elastic&quot;</span><span class="p">,</span> <span class="n">es_password</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">_log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error while creating connection to ElasticSearch instance: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">SVError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error while creating connection to ElasticSearch instance: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Created connection to ElasticSearch instance at </span><span class="si">{</span><span class="n">es_url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>       
+
+    <span class="k">return</span> <span class="n">es</span><span class="p">,</span> <span class="n">es_index</span>
+    
+<div class="viewcode-block" id="call_rest_partition"><a class="viewcode-back" href="../../../svlearn.compute.html#svlearn.compute.es_indexer_job.call_rest_partition">[docs]</a><span class="k">def</span> <span class="nf">call_rest_partition</span><span class="p">(</span><span class="n">records</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This method is called for each partition of the incoming dataframe.</span>
+<span class="sd">    For each partition, it does the following:</span>
+
+<span class="sd">    1. Create a connection to the ElasticSearch instance.</span>
+<span class="sd">    2. For each row in the partition, it calls the ElasticSearch REST endpoint</span>
+<span class="sd">         to index the text.</span>
+<span class="sd">    3. Update the DOCUMENT table to set the ES_INDEXED column to True.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">es_client</span><span class="p">,</span> <span class="n">index_name</span> <span class="o">=</span> <span class="n">_get_elastic_client</span><span class="p">()</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">_get_connection</span><span class="p">()</span>
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+
+    <span class="c1"># it would be better if we used the bulk-update API for ES</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">records</span><span class="p">:</span>
+        <span class="n">doc</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span> <span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span> <span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">TEXT</span><span class="p">}</span>
+        <span class="n">es_client</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">index_name</span><span class="p">,</span> <span class="n">document</span><span class="o">=</span><span class="n">doc</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="n">row</span><span class="o">.</span><span class="n">ID</span><span class="p">)</span>
+        <span class="n">update_query</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">            UPDATE DOCUMENT set ES_INDEXED = </span><span class="si">{</span><span class="kc">True</span><span class="si">}</span>
+<span class="s1">            where ID = </span><span class="si">{</span><span class="n">row</span><span class="o">.</span><span class="n">ID</span><span class="si">}</span>
+<span class="s1">            &#39;&#39;&#39;</span>
+        <span class="p">)</span>
+        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">update_query</span><span class="p">)</span>
+
+    <span class="n">connection</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">connection</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ESIndexerJob"><a class="viewcode-back" href="../../../svlearn.compute.html#svlearn.compute.es_indexer_job.ESIndexerJob">[docs]</a><span class="k">class</span> <span class="nc">ESIndexerJob</span><span class="p">(</span><span class="n">BootcampComputeJob</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class is the entry point for the ES Indexer job.</span>
+<span class="sd">    Given the table of un-indexed documents,</span>
+<span class="sd">    it will send the documents to ES for indexing.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">job_name</span><span class="o">=</span><span class="s1">&#39;ESIndexerJob&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">es_index_url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;services&#39;</span><span class="p">][</span><span class="s1">&#39;es_index&#39;</span><span class="p">]</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Initializing </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">job_name</span><span class="si">}</span><span class="s1"> job&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ESIndexerJob.run"><a class="viewcode-back" href="../../../svlearn.compute.html#svlearn.compute.es_indexer_job.ESIndexerJob.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method is the entry point for the compute job where</span>
+<span class="sd">        the documents are retrieved from DOCUMENT table, un-es-indexed text is sent to ES index.</span>
+<span class="sd">        Also update ES_INDEXED column to True for all rows of DOCUMENT table at the end.</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Running </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">job_name</span><span class="si">}</span><span class="s1"> job&#39;</span><span class="p">)</span>
+        <span class="n">unindexed_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_un_es_indexed_documents</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Populating ES index from </span><span class="si">{</span><span class="n">unindexed_df</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="si">}</span><span class="s1"> documents&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_es_index_text</span><span class="p">(</span><span class="n">unindexed_df</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_es_index_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unindexed_df</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sends text from each text field in the incoming DataFrame to ES index</span>
+<span class="sd">        :param unindexed_df: DataFrame containing the list of unindexed documents</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># for each element of incoming dataframe, call the rest endpoint to ES index</span>
+        <span class="c1"># and update document saying it is indexed</span>
+        <span class="n">unindexed_df</span><span class="o">.</span><span class="n">foreachPartition</span><span class="p">(</span><span class="k">lambda</span> <span class="n">partition</span><span class="p">:</span> <span class="n">call_rest_partition</span><span class="p">(</span><span class="n">partition</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_get_un_es_indexed_documents</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get all the un-es-indexed documents into a DataFrame</span>
+<span class="sd">        :return: DataFrame containing the list of unindexed documents</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Read the data from the MySQL table</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read</span><span class="p">(</span><span class="n">table</span><span class="o">=</span><span class="s2">&quot;DOCUMENT&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Filter the data to only include rows where the es-indexed column is false</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="kc">False</span> <span class="o">==</span> <span class="n">df</span><span class="o">.</span><span class="n">ES_INDEXED</span><span class="p">)</span>
+
+        <span class="c1"># Select the id, text columns</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;ID&quot;</span><span class="p">,</span> <span class="s2">&quot;TEXT&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Display the dataframe</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">df</span>
+
+<div class="viewcode-block" id="ESIndexerJob.describe"><a class="viewcode-back" href="../../../svlearn.compute.html#svlearn.compute.es_indexer_job.ESIndexerJob.describe">[docs]</a>    <span class="k">def</span> <span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;Indexes text from unindexed documents&#39;</span></div></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">job</span> <span class="o">=</span> <span class="n">ESIndexerJob</span><span class="p">()</span>
+    <span class="n">job</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+    <span class="n">job</span><span class="o">.</span><span class="n">spark</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Asif Qamar.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
