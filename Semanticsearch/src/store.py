@@ -141,6 +141,7 @@ def encode_chunks_udf(documents: pd.Series) -> pd.Series:
                   for chunks in documents]
     return pd.Series(embeddings)
 
+
 conf = SparkConf()
 
 spark = SparkSession.builder \
@@ -186,5 +187,4 @@ def write_to_db_map(rows):
 
 df.foreachPartition(write_to_db_map)
 
-# df.show()
 db.close()

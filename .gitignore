@@ -156,3 +156,5 @@ FaissService/faiss.index
 FaissService/app.log
 FaissService/.env
 ImageBind
+
+.checkpoints
