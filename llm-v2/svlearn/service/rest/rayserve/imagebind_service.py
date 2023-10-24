@@ -13,11 +13,10 @@ import logging as log
 import ray
 from ray import serve
 from starlette.requests import Request
-import asyncio
 
 from svlearn.config.configuration import ConfigurationMixin
 from svlearn.utils.compute_utils import get_port
-from svlearn.text.text_chunker import ChunkText
+from svlearn.multimodal.imagebind_embedder import ImageBindEmbedder
 
 
 @serve.deployment(
@@ -28,39 +27,29 @@ from svlearn.text.text_chunker import ChunkText
     # the concurrency of the deployment
     # max_concurrent_queries=100,
 )
-class CleanChunkModel:
+class ImagebindModel:
     """
     This class is the entry point for the clean/chunk service.
     """
 
     def __init__(self):
         super().__init__()
-        self.chunker = ChunkText()
+
+        self.imagebind = ImageBindEmbedder()
 
     @serve.batch()
-    async def sentencize(self, docs):
-        return self.chunker.batch_sentencize(docs)
-
-    @serve.batch()
-    async def embed(self, sentences):
-        return self.chunker.batch_embed(sentences)
-
-    async def chunk(self, text):
-        log.info(f"Received request: {len(text)} chars")
-        sentences = await self.sentencize(text)
-        log.info(f"Sentences: {len(sentences)} sents")
-        embeddings = await asyncio.gather(*[self.embed(sent) for sent in sentences])
-        chunks = self.chunker.chunk(embeddings, sentences)
-        log.info(f"Returning chunks: {len(chunks)} chunks")
-        return chunks
+    async def embed(self, paths: list[tuple[str, str]]):
+        return self.imagebind.batch_embed(paths)
 
     async def __call__(self, request: Request):
         payload = await request.json()
-        text = payload['text']
-        chunks = await self.chunk(text)
+        path = payload['path']
+        modality = payload['modality']
+
+        embedding = await self.embed([(modality, path)])
 
         return {
-            'chunks': chunks
+            'embedding': embedding.tolist()
         }
 
 
@@ -69,9 +58,9 @@ if __name__ == '__main__':
 
     mixin = ConfigurationMixin()
     config = mixin.load_config()
-    url = config['services']['clean_chunk']
+    url = config['services']['imagebind']
     port = get_port(url)
 
-    entrypoint = CleanChunkModel.bind()  # bind() comes from the decorator
+    entrypoint = ImagebindModel.bind()  # bind() comes from the decorator
     serve.run(entrypoint, port=port, host="0.0.0.0", route_prefix="/chunker")
     log.info(f"Started serving CleanChunkModel")

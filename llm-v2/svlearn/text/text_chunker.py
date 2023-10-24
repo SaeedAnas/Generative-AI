@@ -1,96 +1,121 @@
-#  -------------------------------------------------------------------------------------------------
-#   Copyright (c) 2023.  SupportVectors AI Lab
-#   This code is part of the training material, and therefore part of the intellectual property.
-#   It may not be reused or shared without the explicit, written permission of SupportVectors.
-#  #
-#   Use is limited to the duration and purpose of the training at SupportVectors.
-#  #
-#   Author: Asif Qamar
-#  -------------------------------------------------------------------------------------------------
-#
+# MAD RESPECT TO THIS DUDE
+# https://medium.com/@npolovinkin/how-to-chunk-text-into-paragraphs-using-python-8ae66be38ea6
+
+import math
+from scipy.signal import argrelextrema
+from sentence_transformers import util
+import numpy as np
+
 import re
 
 import numpy as np
 import spacy
-from sentence_transformers import SentenceTransformer
+
+from sentence_transformers import SentenceTransformer, util
+from scipy.signal import argrelextrema
 
 from svlearn.config.configuration import ConfigurationMixin
 
 
 class ChunkText(ConfigurationMixin):
     """
-     This class provides the functionality of chunking text into smaller pieces,
-      after some cleanup. The cleanup includes removing newlines,
-      tabs, and extra spaces within a sentence, etc.
+
     """
 
     def __init__(self):
         super().__init__()
         self.config = self.load_config()
-        model_name = self.config['models']['spacy-model']
-        self.sentence_encoder_model = self.config['models']['spacy-sentence-embedding-model']
-        self.nlp = spacy.load(model_name)
-        self.sentence_encoder = SentenceTransformer(self.sentence_encoder_model)
-        self.chunk_size = self.config['text']['chunk-size']
-        self.similarity_threshold = self.config['text']['chunk-similarity-threshold']
+        self.bert_embedding_model = self.config['models']['multilingual-sentence-encoder']
+        self.nlp = self._init_nlp()
+        self.sentence_embedding = SentenceTransformer(
+            self.bert_embedding_model)
 
     @staticmethod
-    def cosine_similarity(α, β):
-        dot_product = np.dot(α, β)
-        norm_α = np.linalg.norm(α)
-        norm_β = np.linalg.norm(β)
-        return dot_product / (norm_α * norm_β)
-    
-    def create_list_of_chunks(self, text_list: list[str]) -> list[list[str]]:
-        output_chunks = []
-        for text in text_list:
-            output_chunks.append(self.create_chunks(text=text))
-        return output_chunks
+    def _init_nlp():
+        nlp = spacy.blank("en")
+        nlp.add_pipe("sentencizer")
+        return nlp
 
-    def create_chunks(self, text: str) -> list[str]:
-        """
-        This method takes a text, cleans it a bit and returns a list of chunks.
-        :param text: the text to be chunked
-        :return: the chunks as a list
-        """
-        doc = self.nlp(text)
-        # Step 1: Clean the text
-        cleaned_text = []
-        for ind, sentence in enumerate(doc.sents):
-            cleaned = re.sub('\s+', ' ', sentence.text).strip()
-            cleaned = re.sub('\n+', ' ', cleaned).strip()
-            cleaned_text.append(cleaned) if (len(cleaned) > 0) else None
-        # Step 2: Chunk it to pieces
-        chunks = []
-        text = ''
-        current_length = 0
-        previous_sentence = None
-        for sentence in cleaned_text:
-            tokens = len(self.nlp(sentence))
-            current_sentence = self.sentence_encoder.encode(sentence)
-            similarity = 1
-            if previous_sentence is not None:
-                similarity = self.cosine_similarity(previous_sentence, current_sentence)
-            if (current_length + tokens < self.chunk_size and
-                    (previous_sentence is None
-                     or similarity > self.similarity_threshold)):
-                text += ' ' + sentence
-                current_length += tokens
+    def batch_sentencize(self, documents):
+        docs = self.nlp.pipe(documents, batch_size=16)
+        return [self.sentencize(doc) for doc in docs]
 
-            else:
-                text = text.strip()
-                chunks.append(text) if (len(text) > 0) else None
-                text = sentence
-                current_length = tokens
+    def batch_embed(self, sentences):
+        embeddings = self.model.encode(
+            sentences, batch_size=16, convert_to_numpy=True)
 
-            # update the previous sentence
-            previous_sentence = current_sentence
+        return embeddings
 
-        chunks.append(text) if (len(text) > 0) else None
+    def chunk(self, embeddings, sentences):
+        embeddings = np.stack(embeddings)
+        split_points = self.get_split_points(embeddings)
+        chunks = self.get_chunks(sentences, split_points)
+
         return chunks
 
-# ASIF: important to do this:
-"""
-#nlp = spacy.load(MODEL_SPACY, disable=["ner","tok2vec", "tagger", "parser", "attribute_ruler", "lemmatizer"])
-It will remove unnessary components and make it faster.
-"""
+    @staticmethod
+    def sentencize(doc):
+        sents = [sent.text for sent in doc.sents]
+        return sents
+
+    @staticmethod
+    def rev_sigmoid(x: float) -> float:
+        return (1 / (1 + math.exp(0.5*x)))
+
+    def activate_similarities(self, similarities: np.array, p_size=10) -> np.array:
+        """ Function returns list of weighted sums of activated sentence similarities
+        Args:
+            similarities (numpy array): it should square matrix where each sentence corresponds to another with cosine similarity
+            p_size (int): number of sentences are used to calculate weighted sum 
+        Returns:
+            list: list of weighted sums
+        """
+        p_size = min(p_size, similarities.shape[0])
+
+        # To create weights for sigmoid function we first have to create space. P_size will determine number of sentences used and the size of weights vector.
+        x = np.linspace(-10, 10, p_size)
+        # Then we need to apply activation function to the created space
+        y = np.vectorize(self.rev_sigmoid)
+        # Because we only apply activation to p_size number of sentences we have to add zeros to neglect the effect of every additional sentence and to match the length ofvector we will multiply
+        activation_weights = np.pad(y(x), (0, similarities.shape[0]-p_size))
+        # 1. Take each diagonal to the right of the main diagonal
+        diagonals = [similarities.diagonal(each)
+                     for each in range(0, similarities.shape[0])]
+        # 2. Pad each diagonal by zeros at the end. Because each diagonal is different length we should pad it with zeros at the end
+        diagonals = [np.pad(each, (0, similarities.shape[0]-len(each)))
+                     for each in diagonals]
+        # 3. Stack those diagonals into new matrix
+        diagonals = np.stack(diagonals)
+        # 4. Apply activation weights to each row. Multiply similarities with our activation.
+        diagonals = diagonals * activation_weights.reshape(-1, 1)
+        # 5. Calculate the weighted sum of activated similarities
+        activated_similarities = np.sum(diagonals, axis=0)
+        return activated_similarities
+
+    def get_split_points(self, embeddings):
+        similarities = util.cos_sim(embeddings, embeddings)
+        activated_similarities = self.activate_similarities(
+            similarities, p_size=10)
+        minmimas = argrelextrema(activated_similarities, np.less, order=1)
+        split_points = {each for each in minmimas[0]}
+        return split_points
+
+    @staticmethod
+    def get_chunks(sents, points):
+        if len(points) == 0:
+            return [' '.join(sents)]
+
+        chunks = []
+        current_chunk = []
+        for idx, sent in enumerate(sents):
+            if idx in points:
+                current_chunk.append(sent)
+                chunks.append(' '.join(current_chunk))
+                current_chunk = []
+            else:
+                current_chunk.append(sent)
+
+        if len(current_chunk) > 0:
+            chunks.append(' '.join(current_chunk))
+
+        return chunks

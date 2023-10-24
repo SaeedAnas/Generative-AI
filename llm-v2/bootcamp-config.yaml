@@ -1,14 +1,13 @@
-
 #
 #  Database configuration information
 
 database:
-  variant: mysql          # the type of database (mysql, postgres, oracle, etc)
-  server: localhost       # the hostname of the server
-  port: 3306              # the port the db-server is listening
-  username: root       # username for user with write privileges
-  password: admin       # password of the user
-  schema: documents       # database schema whose tables will be accessed
+  variant: mysql # the type of database (mysql, postgres, oracle, etc)
+  server: localhost # the hostname of the server
+  port: 3306 # the port the db-server is listening
+  username: root # username for user with write privileges
+  password: admin # password of the user
+  schema: documents # database schema whose tables will be accessed
   #
   # The JDBC information
   #
@@ -16,14 +15,14 @@ database:
     driver-class: com.mysql.cj.jdbc.Driver
     jar-file: mysql-connector-j-8.1.0.jar
     url-format: jdbc:mysql://{server}:{port}/{schema}
-  
+
   postgresql:
     variant: postgresql
     server: localhost
     schema: postgres
     port: 5432
     username: praveen
-    password: password    
+    password: password
     jdbc:
       driver-class: org.postgresql.Driver
       jar-file: postgresql-42.2.5.jar
@@ -34,7 +33,7 @@ database:
 #
 documents:
   source-dir: /Users/praveen/dev/llm-bootcamp/Assignment1/data_files
-  image-dir:  /Volumes/MacX_1TB/devX/data/image/images/25kphotos_sample/
+  image-dir: /Volumes/MacX_1TB/devX/data/image/images/25kphotos_sample/
 
 #
 # Spark details
@@ -48,7 +47,6 @@ spark:
 #
 models:
   multilingual-sentence-encoder: distiluse-base-multilingual-cased-v2
-#  multilingual-cross-encoder:  sentence-transformers/LaBSE
   multilingual-cross-encoder: cross-encoder/stsb-distilroberta-base
   spacy-model: en_core_web_sm
   spacy-sentence-embedding-model: distiluse-base-multilingual-cased-v2
@@ -62,12 +60,12 @@ text:
 
 #
 # Elastic-search
-# es_home is used to locate cert path 
+# es_home is used to locate cert path
 # ca_cert = es_home + "/config/certs/http_ca.crt",
 
 elasticsearch:
   index_name: documents
-  password: =7So_6RkM4TyCfMQGmJx  
+  password: =7So_6RkM4TyCfMQGmJx
   eshome: /Users/praveen/dev/docker/elasticsearch
 
 #
@@ -77,19 +75,17 @@ elasticsearch:
 search:
   faiss:
     index_file: /Users/praveen/dev/llm-bootcamp/sv-release/faiss-index/faiss_index_file
-    
+
 #
 # Services
 #
 services:
   es_index: https://localhost:9200
   search: http://localhost:8006/search
-  
+
   # GPU heavy
   clean_chunk: http://localhost:8001/chunker
   sentence_vectorizer: http://localhost:8002/embedding
   faiss_index_builder: http://localhost:8003/faiss_index_builder
   faiss_search: http://localhost:8004/faiss_search
   reranker: http://localhost:8005/rerank
-  
-
