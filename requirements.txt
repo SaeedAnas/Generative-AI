@@ -1,0 +1,10 @@
+fastapi
+numpy
+pandas
+psycopg[binary]
+psycopg[pool]
+pydantic
+pydantic-settings
+qdrant-client
+sentence-transformers
+vllm
