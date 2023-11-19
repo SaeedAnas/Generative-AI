@@ -158,3 +158,5 @@ FaissService/.env
 ImageBind
 
 .checkpoints
+
+data/
