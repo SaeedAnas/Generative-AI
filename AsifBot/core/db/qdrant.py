@@ -14,7 +14,7 @@ class Qdrant:
             collection_name=self.collection_name,
             vectors_config=VectorParams(
                 size=self.embedding_dim,
-                distance=Distance.DOT
+                distance=Distance.COSINE
             )
         )
         
@@ -30,12 +30,17 @@ class Qdrant:
             ]
         )
         
-    def search(self, point, limit=10):
-        return self.client.search(
+    def search(self, point, limit=10, ids_only=False):
+        points = self.client.search(
             collection_name=self.collection_name,
             query_vector=point,
             limit=limit
         )
+        
+        if ids_only:
+            return [point.id for point in points]
+        else:
+            return points
         
     def info(self):
         return self.client.get_collection(collection_name=self.collection_name)

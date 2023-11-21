@@ -1,8 +1,10 @@
-from pydantic import BaseSettings, BaseModel
+from pydantic import BaseModel
+from pydantic_settings import BaseSettings
 
 class LLM(BaseModel):
     # Embedding
-    sentence_transformer: str = "jinaai/jina-embedding-b-en-v1"
+    chunk_embedder: str = "jinaai/jina-embedding-b-en-v1"
+    query_embedder: str = "jinaai/jina-embedding-b-en-v1"
     embedding_dim: int = 768
 
     # LLM
@@ -10,6 +12,7 @@ class LLM(BaseModel):
     
 class ENDPOINTS(BaseModel):
     vllm_endpoint: int = 8000
+    rag_endpoint: int = 8001
 
 class Config(BaseSettings):
     POSTGRES_USER: str
